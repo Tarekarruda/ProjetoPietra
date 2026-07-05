@@ -1,36 +1,36 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: #1a0a2e;
   font-family: 'Georgia', serif;
   overflow: hidden;
+  touch-action: none;
 }
 
-/* ── Tela do envelope ── */
+/* ── Envelope ── */
 .tela-envelope {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
+  gap: clamp(12px, 3vw, 24px);
+  padding: 16px;
 }
 
 .subtitulo {
   color: #c9a7f5;
-  font-size: 1rem;
+  font-size: clamp(0.8rem, 3.5vw, 1rem);
   letter-spacing: 0.05em;
+  text-align: center;
 }
 
 .instrucao {
   color: #7a5bb5;
-  font-size: 0.85rem;
+  font-size: clamp(0.7rem, 3vw, 0.85rem);
   animation: piscar 1.5s ease-in-out infinite;
 }
 
@@ -40,8 +40,8 @@ body {
 }
 
 .envelope {
-  width: 200px;
-  height: 140px;
+  width: clamp(140px, 40vw, 200px);
+  height: clamp(100px, 28vw, 140px);
   position: relative;
   cursor: pointer;
   transition: transform 0.2s;
@@ -50,26 +50,20 @@ body {
 .envelope:hover { transform: scale(1.05); }
 
 .corpo {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   background: #4a2080;
   border-radius: 4px;
   border: 2px solid #7a4fbf;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2.5rem;
+  display: flex; align-items: center; justify-content: center;
+  font-size: clamp(1.8rem, 7vw, 2.5rem);
 }
 
 .aba {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  border-left:  100px solid transparent;
-  border-right: 100px solid transparent;
-  border-top:   70px solid #6a30b0;
+  position: absolute; top: 0; left: 0;
+  width: 0; height: 0;
+  border-left:  calc(clamp(140px, 40vw, 200px) / 2) solid transparent;
+  border-right: calc(clamp(140px, 40vw, 200px) / 2) solid transparent;
+  border-top:   calc(clamp(100px, 28vw, 140px) * 0.5) solid #6a30b0;
   z-index: 1;
   transition: transform 0.5s ease;
   transform-origin: top center;
@@ -81,28 +75,32 @@ body {
   transition: transform 0.7s ease-in, opacity 0.7s ease-in;
 }
 
-/* ── Tela da caixa ── */
+/* ── Tela caixa ── */
 .tela-caixa {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  gap: 24px;
+  min-height: 100dvh;
+  gap: clamp(10px, 2vh, 24px);
+  padding: 12px;
+  width: 100%;
 }
 
-/* ── Wrapper da caixa ── */
+/* ── Caixa wrapper ── */
 .caixa-wrapper {
   position: relative;
-  width: 480px;
+  width: min(480px, 88vw);
   perspective: 1000px;
   cursor: pointer;
+  flex-shrink: 0;
 }
 
 /* ── Tampa ── */
 .tampa {
-  width: 500px;
-  height: 90px;
+  width: calc(min(480px, 88vw) + 20px);
+  height: clamp(60px, 12vw, 90px);
   background: #5a1090;
   border: 3px solid #9a5fdf;
   border-radius: 10px 10px 4px 4px;
@@ -115,10 +113,10 @@ body {
 
 .tampa.aberta { transform: rotateX(-130deg); }
 
-/* ── Corpo da caixa ── */
+/* ── Corpo caixa ── */
 .corpo-caixa {
-  width: 480px;
-  height: 380px;
+  width: min(480px, 88vw);
+  height: clamp(200px, 40vw, 380px);
   background: #3a1070;
   border: 3px solid #7a4fbf;
   border-top: none;
@@ -128,22 +126,20 @@ body {
 /* ── Fitas ── */
 .fita-h {
   position: absolute;
-  width: 480px;
-  height: 14px;
+  width: min(480px, 88vw);
+  height: clamp(8px, 1.8vw, 14px);
   background: #e855a0;
-  top: 90px;
-  left: 0;
-  z-index: 2;
+  top: clamp(60px, 12vw, 90px);
+  left: 0; z-index: 2;
   transition: opacity 0.5s ease;
 }
 
 .fita-v {
   position: absolute;
-  width: 14px;
-  height: 484px;
+  width: clamp(8px, 1.8vw, 14px);
+  height: calc(clamp(60px, 12vw, 90px) + clamp(200px, 40vw, 380px));
   background: #e855a0;
-  left: 50%;
-  top: 0;
+  left: 50%; top: 0;
   transform: translateX(-50%);
   z-index: 4;
   transition: opacity 0.5s ease;
@@ -152,44 +148,31 @@ body {
 /* ── Laço ── */
 .laco {
   position: absolute;
-  top: 50%;
-  left: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: 120px;
-  height: 60px;
+  width: clamp(70px, 15vw, 120px);
+  height: clamp(36px, 8vw, 60px);
   z-index: 6;
 }
 
 .laco-loop {
   position: absolute;
-  width: 58px;
-  height: 42px;
+  width: clamp(34px, 7vw, 58px);
+  height: clamp(24px, 5vw, 42px);
   background: #e855a0;
-  border-radius: 50%;
-  top: 0;
+  border-radius: 50%; top: 0;
   transition: transform 0.6s ease, opacity 0.5s ease;
 }
 
-.laco-loop-esq {
-  right: 54px;
-  transform: rotate(-25deg);
-  transform-origin: right center;
-}
-
-.laco-loop-dir {
-  left: 54px;
-  transform: rotate(25deg);
-  transform-origin: left center;
-}
+.laco-loop-esq { right: 50%; transform: rotate(-25deg); transform-origin: right center; }
+.laco-loop-dir { left: 50%;  transform: rotate(25deg);  transform-origin: left center; }
 
 .laco-no {
   position: absolute;
-  width: 24px;
-  height: 24px;
-  background: #f890c8;
-  border-radius: 50%;
-  top: 50%;
-  left: 50%;
+  width: clamp(14px, 3vw, 24px);
+  height: clamp(14px, 3vw, 24px);
+  background: #f890c8; border-radius: 50%;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
   transition: transform 0.4s ease, opacity 0.4s ease;
@@ -198,80 +181,58 @@ body {
 /* ── Celular ── */
 .celular-wrapper {
   opacity: 0;
-  margin-top: 8px;
+  margin-top: 4px;
   flex-shrink: 0;
 }
 
 .celular {
-  width: 180px;
-  height: 340px;
+  width: clamp(120px, 32vw, 180px);
+  height: clamp(226px, 60vw, 340px);
   background: #1a0530;
   border: 3px solid #7a4fbf;
   border-radius: 32px;
   position: relative;
-  display: flex;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   align-items: center;
-  padding: 18px 10px 14px;
+  padding: clamp(10px, 2.5vw, 18px) clamp(6px, 1.5vw, 10px) clamp(8px, 2vw, 14px);
 }
 
 .celular-speaker {
-  width: 54px;
-  height: 5px;
-  background: #2a0a50;
-  border-radius: 3px;
-  margin-bottom: 8px;
+  width: 40%; height: clamp(3px, 0.8vw, 5px);
+  background: #2a0a50; border-radius: 3px; margin-bottom: 6px;
 }
 
 .celular-camera {
   position: absolute;
-  top: 20px;
-  right: 56px;
-  width: 10px;
-  height: 10px;
-  background: #2a0a50;
-  border: 1.5px solid #4a2080;
-  border-radius: 50%;
+  top: clamp(12px, 3vw, 20px); right: 36%;
+  width: clamp(6px, 1.5vw, 10px); height: clamp(6px, 1.5vw, 10px);
+  background: #2a0a50; border: 1.5px solid #4a2080; border-radius: 50%;
 }
 
 .celular-tela {
-  width: 100%;
-  flex: 1;
-  background: #0d0520;
-  border-radius: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 12px;
+  width: 100%; flex: 1;
+  background: #0d0520; border-radius: 20px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; padding: 8px;
 }
 
 .celular-home {
-  width: 54px;
-  height: 5px;
-  background: #2a0a50;
-  border-radius: 3px;
-  margin-top: 12px;
+  width: 40%; height: clamp(3px, 0.8vw, 5px);
+  background: #2a0a50; border-radius: 3px; margin-top: 8px;
 }
 
 .celular-botao-vol {
-  position: absolute;
-  left: -5px;
-  width: 4px;
-  height: 24px;
-  background: #5a30a0;
-  border-radius: 2px;
+  position: absolute; left: -4px;
+  width: 3px; height: clamp(16px, 4vw, 24px);
+  background: #5a30a0; border-radius: 2px;
 }
 
-.celular-botao-vol.um   { top: 80px; }
-.celular-botao-vol.dois { top: 116px; }
+.celular-botao-vol.um   { top: clamp(50px, 13vw, 80px); }
+.celular-botao-vol.dois { top: clamp(76px, 20vw, 116px); }
 
 .celular-botao-power {
-  position: absolute;
-  right: -5px;
-  top: 96px;
-  width: 4px;
-  height: 36px;
-  background: #5a30a0;
-  border-radius: 2px;
+  position: absolute; right: -4px;
+  top: clamp(60px, 16vw, 96px);
+  width: 3px; height: clamp(22px, 6vw, 36px);
+  background: #5a30a0; border-radius: 2px;
 }
