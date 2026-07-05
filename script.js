@@ -4,25 +4,24 @@
 ;(function injetarEstilos() {
   const s = document.createElement('style')
   s.textContent = `
-    /* ── Lockscreen ── */
     .lockscreen {
       position: absolute; inset: 0; border-radius: 20px;
       background: linear-gradient(160deg, #0d0420 0%, #1a063a 60%, #0a0218 100%);
       display: flex; flex-direction: column; align-items: center;
-      justify-content: space-between; padding: 20px 0 24px;
+      justify-content: space-between; padding: 16px 0 20px;
       cursor: pointer; z-index: 10; overflow: hidden;
     }
     .lock-topo {
-      display: flex; flex-direction: column; align-items: center; gap: 3px;
-      margin-top: 8px;
+      display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 6px;
     }
     .lock-hora {
-      font-size: 3.4rem; color: #f0e8ff;
+      font-size: clamp(2rem, 8vw, 3.4rem); color: #f0e8ff;
       font-family: Georgia, serif; font-weight: 300; letter-spacing: -1px;
       text-shadow: 0 0 30px rgba(160,100,255,0.4);
     }
     .lock-data {
-      font-size: 0.62rem; color: #9a6fd5; letter-spacing: 0.1em; text-transform: uppercase;
+      font-size: clamp(0.5rem, 1.8vw, 0.62rem); color: #9a6fd5;
+      letter-spacing: 0.1em; text-transform: uppercase;
     }
     .lock-notif {
       width: 88%; background: rgba(40,12,80,0.85);
@@ -31,27 +30,15 @@
       display: flex; align-items: center; gap: 7px;
       animation: notifPulse 2s ease-in-out infinite;
     }
-    @keyframes notifPulse {
-      0%,100% { opacity: 1; } 50% { opacity: 0.7; }
-    }
-    .lock-notif-icon {
-      font-size: 1.3rem; flex-shrink: 0;
-    }
+    @keyframes notifPulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    .lock-notif-icon { font-size: clamp(1rem, 4vw, 1.3rem); flex-shrink: 0; }
     .lock-notif-body { display: flex; flex-direction: column; gap: 1px; }
-    .lock-notif-app  { font-size: 0.5rem; color: #7a5bb5; letter-spacing: 0.08em; text-transform: uppercase; }
-    .lock-notif-msg  { font-size: 0.6rem; color: #d0b8f5; line-height: 1.4; }
-    .lock-base {
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-    }
-    .lock-bolinha {
-      width: 32px; height: 4px; background: rgba(200,160,255,0.3);
-      border-radius: 2px;
-    }
-    .lock-deslize {
-      font-size: 0.5rem; color: #5a3a7a; letter-spacing: 0.15em; text-transform: uppercase;
-    }
+    .lock-notif-app  { font-size: clamp(0.42rem, 1.5vw, 0.5rem); color: #7a5bb5; letter-spacing: 0.08em; text-transform: uppercase; }
+    .lock-notif-msg  { font-size: clamp(0.52rem, 1.8vw, 0.6rem); color: #d0b8f5; line-height: 1.4; }
+    .lock-base { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+    .lock-bolinha { width: 32px; height: 4px; background: rgba(200,160,255,0.3); border-radius: 2px; }
+    .lock-deslize { font-size: clamp(0.42rem, 1.5vw, 0.5rem); color: #5a3a7a; letter-spacing: 0.15em; text-transform: uppercase; }
 
-    /* ── Chat app ── */
     .chat-app {
       position: absolute; inset: 0; border-radius: 20px;
       background: #0a031a; display: flex; flex-direction: column;
@@ -62,32 +49,32 @@
     .chat-app.aberto { transform: translateY(0); }
 
     .chat-header {
-      background: #100528; padding: 8px 10px;
-      display: flex; align-items: center; gap: 7px;
+      background: #100528; padding: 6px 8px;
+      display: flex; align-items: center; gap: 6px;
       border-bottom: 0.5px solid #1e0d3a; flex-shrink: 0;
     }
     .chat-voltar { font-size: 0.9rem; color: #7a5bb5; }
     .chat-avatar {
-      width: 26px; height: 26px; border-radius: 50%;
+      width: 24px; height: 24px; border-radius: 50%;
       background: #5a1090; display: flex; align-items: center;
-      justify-content: center; font-size: 0.62rem; color: #e0d0ff; flex-shrink: 0;
+      justify-content: center; font-size: 0.55rem; color: #e0d0ff; flex-shrink: 0;
     }
     .chat-info  { display: flex; flex-direction: column; gap: 1px; }
-    .chat-nome  { font-size: 0.7rem; color: #e0d0ff; font-family: Georgia, serif; }
-    .chat-status { font-size: 0.52rem; color: #4caf82; }
+    .chat-nome  { font-size: clamp(0.55rem, 2vw, 0.7rem); color: #e0d0ff; font-family: Georgia, serif; }
+    .chat-status { font-size: clamp(0.44rem, 1.6vw, 0.52rem); color: #4caf82; }
 
     .chat-msgs {
-      flex: 1; overflow-y: scroll; padding: 8px 7px;
-      display: flex; flex-direction: column; gap: 5px;
+      flex: 1; overflow-y: scroll; padding: 6px 6px;
+      display: flex; flex-direction: column; gap: 4px;
       scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
     }
     .chat-msgs::-webkit-scrollbar { width: 2px; }
     .chat-msgs::-webkit-scrollbar-thumb { background: #2a1a4a; border-radius: 1px; }
 
     .msg {
-      max-width: 85%; padding: 6px 10px; border-radius: 14px;
-      font-size: 0.62rem; line-height: 1.5; word-break: break-word;
-      animation: msgIn 0.22s ease;
+      max-width: 88%; padding: 5px 8px; border-radius: 12px;
+      font-size: clamp(0.52rem, 1.8vw, 0.62rem); line-height: 1.5;
+      word-break: break-word; animation: msgIn 0.22s ease;
     }
     @keyframes msgIn {
       from { opacity: 0; transform: translateY(5px) scale(0.97); }
@@ -101,58 +88,76 @@
 
     .digitando {
       display: flex; align-items: center; gap: 3px;
-      padding: 7px 9px; background: #1a0a38; border-radius: 14px;
+      padding: 6px 8px; background: #1a0a38; border-radius: 12px;
       border-bottom-left-radius: 3px; align-self: flex-start;
       border: 0.5px solid #2a1a4a; animation: msgIn 0.22s ease;
     }
     .digitando span {
-      width: 4px; height: 4px; background: #7a5bb5;
+      width: 3px; height: 3px; background: #7a5bb5;
       border-radius: 50%; animation: dotbounce 1.1s ease-in-out infinite;
     }
     .digitando span:nth-child(2) { animation-delay: 0.16s; }
     .digitando span:nth-child(3) { animation-delay: 0.32s; }
     @keyframes dotbounce {
       0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-      30%          { transform: translateY(-4px); opacity: 1; }
+      30%          { transform: translateY(-3px); opacity: 1; }
     }
 
     .chat-bottom {
-      padding: 5px 7px; background: #100528;
+      padding: 4px 6px; background: #100528;
       border-top: 0.5px solid #1e0d3a; flex-shrink: 0;
     }
     .input-fake {
-      background: #1a0a38; border-radius: 14px; padding: 5px 10px;
-      font-size: 0.58rem; color: #2a1a4a; font-family: Georgia, serif;
+      background: #1a0a38; border-radius: 12px; padding: 4px 8px;
+      font-size: clamp(0.5rem, 1.8vw, 0.58rem); color: #2a1a4a; font-family: Georgia, serif;
     }
 
     .fechar-hint {
-      font-size: 0.52rem; color: #5a3a8a; text-align: center;
-      padding: 4px 0; letter-spacing: 0.1em; text-transform: uppercase;
-      animation: piscar 1.4s ease-in-out infinite; flex-shrink: 0;
+      font-size: clamp(0.44rem, 1.6vw, 0.52rem); color: #5a3a8a; text-align: center;
+      padding: 3px 0; letter-spacing: 0.1em; text-transform: uppercase;
+      animation: piscarHint 1.4s ease-in-out infinite; flex-shrink: 0;
     }
-    @keyframes piscar { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    @keyframes piscarHint { 0%,100%{opacity:1} 50%{opacity:0.2} }
 
-    /* ── Timer ── */
     .timer-wrap {
       position: fixed; inset: 0; display: flex; flex-direction: column;
       align-items: center; justify-content: center;
-      z-index: 2000; pointer-events: none; opacity: 0; text-align: center; gap: 8px;
+      z-index: 2000; pointer-events: none; opacity: 0;
+      text-align: center; gap: 8px; padding: 20px;
     }
-    .timer-label   { color: #9a6fd5; font-size: 0.9rem; letter-spacing: 0.04em; }
+    .timer-label   { color: #9a6fd5; font-size: clamp(0.75rem, 3.5vw, 0.9rem); letter-spacing: 0.04em; }
     .timer-display {
-      color: #e0d0ff; font-size: 3.2rem;
+      color: #e0d0ff; font-size: clamp(2rem, 10vw, 3.2rem);
       font-family: Georgia, serif; letter-spacing: 0.08em;
     }
-    .timer-sub { color: #5a3a8a; font-size: 0.75rem; }
+    .timer-sub { color: #5a3a8a; font-size: clamp(0.65rem, 3vw, 0.75rem); }
+
+    @media (max-width: 480px) {
+      .tela-caixa { justify-content: center; gap: 8px; }
+    }
   `
   document.head.appendChild(s)
 })()
 
 // ═══════════════════════════════════════════════════════
+// HELPERS RESPONSIVOS
+// ═══════════════════════════════════════════════════════
+const vw = () => window.innerWidth
+const vh = () => window.innerHeight
+
+// Calcula largura real da caixa (espelha o CSS)
+function larguraCaixa() { return Math.min(480, vw() * 0.88) }
+
+// Calcula spread das cartas baseado na tela
+function spreadCartas(index, total) {
+  const maxSpread = Math.min(220, (vw() * 0.85) / total)
+  return (index - (total - 1) / 2) * maxSpread
+}
+
+// ═══════════════════════════════════════════════════════
 // ÁUDIO
 // ═══════════════════════════════════════════════════════
-let audioCtx     = null
-let ringInterval = null
+let audioCtx = null, ringInterval = null
 
 function getCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
@@ -171,8 +176,7 @@ function somEnvelope() {
   const c = getCtx(), t = c.currentTime
   const n = criarRuido(0.6), f = c.createBiquadFilter(), g = c.createGain()
   f.type = 'bandpass'
-  f.frequency.setValueAtTime(3500, t); f.frequency.exponentialRampToValueAtTime(1200, t + 0.6)
-  f.Q.value = 1.2
+  f.frequency.setValueAtTime(3500, t); f.frequency.exponentialRampToValueAtTime(1200, t + 0.6); f.Q.value = 1.2
   g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.35, t + 0.05)
   g.gain.setValueAtTime(0.28, t + 0.2); g.gain.exponentialRampToValueAtTime(0.001, t + 0.6)
   n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.6)
@@ -195,10 +199,8 @@ function somLaco() {
   const c = getCtx(), t = c.currentTime
   const n = criarRuido(0.5), f = c.createBiquadFilter(), g = c.createGain()
   f.type = 'bandpass'
-  f.frequency.setValueAtTime(800, t)
-  f.frequency.exponentialRampToValueAtTime(2500, t + 0.25)
-  f.frequency.exponentialRampToValueAtTime(600, t + 0.5)
-  f.Q.value = 0.6
+  f.frequency.setValueAtTime(800, t); f.frequency.exponentialRampToValueAtTime(2500, t + 0.25)
+  f.frequency.exponentialRampToValueAtTime(600, t + 0.5); f.Q.value = 0.6
   g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.2, t + 0.08)
   g.gain.setValueAtTime(0.15, t + 0.3); g.gain.exponentialRampToValueAtTime(0.001, t + 0.5)
   n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.5)
@@ -207,8 +209,7 @@ function somLaco() {
 function somTampa() {
   const c = getCtx(), t = c.currentTime
   const o = c.createOscillator(), fo = c.createBiquadFilter(), go = c.createGain()
-  o.type = 'sawtooth'
-  o.frequency.setValueAtTime(60, t); o.frequency.linearRampToValueAtTime(38, t + 1.0)
+  o.type = 'sawtooth'; o.frequency.setValueAtTime(60, t); o.frequency.linearRampToValueAtTime(38, t + 1.0)
   fo.type = 'lowpass'; fo.frequency.value = 300
   go.gain.setValueAtTime(0.001, t); go.gain.linearRampToValueAtTime(0.12, t + 0.1)
   go.gain.setValueAtTime(0.10, t + 0.8); go.gain.exponentialRampToValueAtTime(0.001, t + 1.1)
@@ -223,9 +224,7 @@ function somTampa() {
 function somCarta() {
   const c = getCtx(), t = c.currentTime
   const n = criarRuido(0.35), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'
-  f.frequency.setValueAtTime(2800, t); f.frequency.exponentialRampToValueAtTime(1600, t + 0.35)
-  f.Q.value = 1.5
+  f.type = 'bandpass'; f.frequency.setValueAtTime(2800, t); f.frequency.exponentialRampToValueAtTime(1600, t + 0.35); f.Q.value = 1.5
   g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.22, t + 0.04)
   g.gain.setValueAtTime(0.18, t + 0.15); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35)
   n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.35)
@@ -234,51 +233,39 @@ function somCarta() {
 function somCelularSubindo() {
   const c = getCtx(), t = c.currentTime
   const n = criarRuido(0.4), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'
-  f.frequency.setValueAtTime(1000, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.4)
-  f.Q.value = 1.0
+  f.type = 'bandpass'; f.frequency.setValueAtTime(1000, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.4); f.Q.value = 1.0
   g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.18, t + 0.08)
   g.gain.exponentialRampToValueAtTime(0.001, t + 0.4)
   n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.4)
 }
 
-// Som de notificação estilo iPhone (tri-tone simplificado)
 function somNotificacao() {
   const c = getCtx(), t = c.currentTime
   function ping(freq, ini, dur) {
     const o = c.createOscillator(), g = c.createGain()
     o.type = 'sine'; o.frequency.value = freq
-    g.gain.setValueAtTime(0.001, t + ini)
-    g.gain.linearRampToValueAtTime(0.22, t + ini + 0.012)
+    g.gain.setValueAtTime(0.001, t + ini); g.gain.linearRampToValueAtTime(0.22, t + ini + 0.012)
     g.gain.exponentialRampToValueAtTime(0.001, t + ini + dur)
-    o.connect(g); g.connect(c.destination)
-    o.start(t + ini); o.stop(t + ini + dur)
-    // Harmônico suave junto
+    o.connect(g); g.connect(c.destination); o.start(t + ini); o.stop(t + ini + dur)
     const o2 = c.createOscillator(), g2 = c.createGain()
     o2.type = 'sine'; o2.frequency.value = freq * 2
-    g2.gain.setValueAtTime(0.001, t + ini)
-    g2.gain.linearRampToValueAtTime(0.07, t + ini + 0.01)
+    g2.gain.setValueAtTime(0.001, t + ini); g2.gain.linearRampToValueAtTime(0.07, t + ini + 0.01)
     g2.gain.exponentialRampToValueAtTime(0.001, t + ini + dur * 0.6)
-    o2.connect(g2); g2.connect(c.destination)
-    o2.start(t + ini); o2.stop(t + ini + dur)
+    o2.connect(g2); g2.connect(c.destination); o2.start(t + ini); o2.stop(t + ini + dur)
   }
-  ping(1318, 0.00, 0.18)   // Mi5
-  ping(1568, 0.10, 0.18)   // Sol5
-  ping(2093, 0.20, 0.30)   // Do6
+  ping(1318, 0.00, 0.18)
+  ping(1568, 0.10, 0.18)
+  ping(2093, 0.20, 0.30)
 }
 
 function tocarBuzz() {
   const c = getCtx(), t = c.currentTime
   function pulso(ini, dur) {
     const o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain()
-    o.type = 'square'; o.frequency.value = 55
-    f.type = 'lowpass'; f.frequency.value = 180
-    g.gain.setValueAtTime(0.001, t + ini)
-    g.gain.linearRampToValueAtTime(0.35, t + ini + 0.015)
-    g.gain.setValueAtTime(0.32, t + ini + dur - 0.02)
-    g.gain.linearRampToValueAtTime(0.001, t + ini + dur)
-    o.connect(f); f.connect(g); g.connect(c.destination)
-    o.start(t + ini); o.stop(t + ini + dur)
+    o.type = 'square'; o.frequency.value = 55; f.type = 'lowpass'; f.frequency.value = 180
+    g.gain.setValueAtTime(0.001, t + ini); g.gain.linearRampToValueAtTime(0.35, t + ini + 0.015)
+    g.gain.setValueAtTime(0.32, t + ini + dur - 0.02); g.gain.linearRampToValueAtTime(0.001, t + ini + dur)
+    o.connect(f); f.connect(g); g.connect(c.destination); o.start(t + ini); o.stop(t + ini + dur)
   }
   pulso(0.00, 0.12); pulso(0.18, 0.12); pulso(0.36, 0.30)
 }
@@ -306,22 +293,14 @@ function abrirEnvelope() {
 // CAIXA
 // ═══════════════════════════════════════════════════════
 function mostrarCaixa() {
-  const telaCaixa = document.createElement('div')
-  telaCaixa.classList.add('tela-caixa')
+  const telaCaixa = document.createElement('div'); telaCaixa.classList.add('tela-caixa')
+  const wrapper   = document.createElement('div'); wrapper.classList.add('caixa-wrapper')
+  const tampa     = document.createElement('div'); tampa.classList.add('tampa')
+  const laco      = document.createElement('div'); laco.classList.add('laco')
+  const loopEsq   = document.createElement('div'); loopEsq.classList.add('laco-loop', 'laco-loop-esq')
+  const loopDir   = document.createElement('div'); loopDir.classList.add('laco-loop', 'laco-loop-dir')
+  const no        = document.createElement('div'); no.classList.add('laco-no')
 
-  const wrapper = document.createElement('div')
-  wrapper.classList.add('caixa-wrapper')
-
-  const tampa = document.createElement('div'); tampa.classList.add('tampa')
-
-  const laco = document.createElement('div')
-  const loopEsq = document.createElement('div')
-  const loopDir = document.createElement('div')
-  const no = document.createElement('div')
-  laco.classList.add('laco')
-  loopEsq.classList.add('laco-loop', 'laco-loop-esq')
-  loopDir.classList.add('laco-loop', 'laco-loop-dir')
-  no.classList.add('laco-no')
   laco.appendChild(loopEsq); laco.appendChild(no); laco.appendChild(loopDir)
   tampa.appendChild(laco)
 
@@ -330,7 +309,7 @@ function mostrarCaixa() {
   const corpo = document.createElement('div'); corpo.classList.add('corpo-caixa')
 
   const dica = document.createElement('p')
-  dica.style.color = '#c9a7f5'; dica.style.fontSize = '0.85rem'
+  dica.style.color = '#c9a7f5'; dica.style.fontSize = 'clamp(0.7rem, 3vw, 0.85rem)'
   dica.textContent = 'clique na caixa'
 
   wrapper.appendChild(tampa); wrapper.appendChild(fitaH)
@@ -339,7 +318,7 @@ function mostrarCaixa() {
   document.body.appendChild(telaCaixa)
 
   gsap.fromTo(wrapper,
-    { y: -800, opacity: 0 },
+    { y: -900, opacity: 0 },
     { y: 0, opacity: 1, duration: 1.1, ease: 'bounce.out', onComplete: () => somAterrissagem() }
   )
 
@@ -364,8 +343,8 @@ function abrirCaixa(tampa, loopEsq, loopDir, no, fitaV, fitaH, dica, wrapper, te
   gsap.to(dica, { opacity: 0, duration: 0.3 })
 
   somLaco()
-  gsap.to(loopEsq, { x: -90, y: -50, opacity: 0, rotation: -40, duration: 0.6, ease: 'power2.out' })
-  gsap.to(loopDir, { x:  90, y: -50, opacity: 0, rotation:  40, duration: 0.6, ease: 'power2.out' })
+  gsap.to(loopEsq, { x: -70, y: -40, opacity: 0, rotation: -40, duration: 0.6, ease: 'power2.out' })
+  gsap.to(loopDir, { x:  70, y: -40, opacity: 0, rotation:  40, duration: 0.6, ease: 'power2.out' })
   gsap.to(no,      { scale: 0, opacity: 0, duration: 0.4, ease: 'power2.in' })
   gsap.to([fitaV, fitaH], { opacity: 0, duration: 0.5, delay: 0.3 })
 
@@ -381,26 +360,46 @@ function abrirCaixa(tampa, loopEsq, loopDir, no, fitaV, fitaH, dica, wrapper, te
 }
 
 function criarCarta(carta, index, total) {
-  const el = document.createElement('div')
-  const cx = window.innerWidth / 2, cy = window.innerHeight / 2
-  const spread  = (index - (total - 1) / 2) * 220
-  const rotacao = (index - (total - 1) / 2) * 10
+  const el  = document.createElement('div')
+  const cx  = vw() / 2
+  const cy  = vh() / 2
+
+  // Tamanho responsivo da carta
+  const largura  = Math.min(240, vw() * 0.55)
+  const spread   = spreadCartas(index, total)
+  const rotacao  = (index - (total - 1) / 2) * 8
+  const subirY   = Math.min(300, vh() * 0.38)
+  const padding  = Math.min(28, vw() * 0.05)
+  const fontSize = Math.min(1.25, vw() * 0.028) + 'rem'
+  const emojiFz  = Math.min(3, vw() * 0.07) + 'rem'
 
   el.style.cssText = `
-    position: fixed; left: ${cx - 120}px; top: ${cy + 60}px;
-    width: 240px; background: #2a0a50; border: 1px solid #7a4fbf;
-    border-radius: 10px; padding: 28px; text-align: center;
-    color: #c9a7f5; font-size: 1.25rem; line-height: 1.6;
-    z-index: 100; opacity: 0; cursor: grab; user-select: none;
+    position: fixed;
+    left: ${cx - largura / 2}px;
+    top: ${cy + 60}px;
+    width: ${largura}px;
+    background: #2a0a50;
+    border: 1px solid #7a4fbf;
+    border-radius: 10px;
+    padding: ${padding}px;
+    text-align: center;
+    color: #c9a7f5;
+    font-size: ${fontSize};
+    line-height: 1.6;
+    z-index: 100;
+    opacity: 0;
+    cursor: grab;
+    user-select: none;
+    touch-action: none;
   `
   el.innerHTML = `
-    <div style="font-size:3rem; margin-bottom:14px">${carta.emoji}</div>
+    <div style="font-size:${emojiFz}; margin-bottom:10px">${carta.emoji}</div>
     <div style="white-space: pre-line">${carta.texto}</div>
   `
   document.body.appendChild(el)
 
   gsap.to(el, {
-    y: -320, x: spread, rotation: rotacao, opacity: 1,
+    y: -subirY, x: spread, rotation: rotacao, opacity: 1,
     duration: 1.6, ease: 'elastic.out(1, 0.6)',
     onComplete: () => ativarArrasto(el, rotacao)
   })
@@ -467,11 +466,14 @@ function mostrarCelular(telaCaixa) {
   const vol2    = document.createElement('div'); vol2.classList.add('celular-botao-vol', 'dois')
   const power   = document.createElement('div'); power.classList.add('celular-botao-power')
 
-  // Notificação piscando na tela enquanto vibra
+  const emojiFz  = Math.min(2, vw() * 0.05) + 'rem'
+  const textFz   = Math.min(0.58, vw() * 0.014) + 'rem'
+  const nameFz   = Math.min(0.65, vw() * 0.016) + 'rem'
+
   tela.innerHTML = `
-    <div style="font-size:2rem; animation: notifPulse 1.8s ease-in-out infinite;">💌</div>
-    <div style="font-size:0.58rem; color:#9a6fd5; margin-top:6px; letter-spacing:0.05em; animation: notifPulse 1.8s ease-in-out infinite 0.3s;">mensagem nova</div>
-    <div style="font-size:0.65rem; color:#c9a7f5; margin-top:3px; animation: notifPulse 1.8s ease-in-out infinite 0.6s;">Tarek 💌</div>
+    <div style="font-size:${emojiFz}; animation: notifPulse 1.8s ease-in-out infinite;">💌</div>
+    <div style="font-size:${textFz}; color:#9a6fd5; margin-top:6px; letter-spacing:0.05em; animation: notifPulse 1.8s ease-in-out infinite 0.3s;">mensagem nova</div>
+    <div style="font-size:${nameFz}; color:#c9a7f5; margin-top:3px; animation: notifPulse 1.8s ease-in-out infinite 0.6s;">Tarek 💌</div>
   `
 
   celular.appendChild(speaker); celular.appendChild(camera); celular.appendChild(tela)
@@ -481,10 +483,7 @@ function mostrarCelular(telaCaixa) {
   somCelularSubindo()
   gsap.fromTo(wrapCel,
     { y: 300, opacity: 0 },
-    {
-      y: 0, opacity: 1, duration: 1.2, ease: 'back.out(1.7)',
-      onComplete: () => iniciarVibracao(wrapCel, tela, telaCaixa)
-    }
+    { y: 0, opacity: 1, duration: 1.2, ease: 'back.out(1.7)', onComplete: () => iniciarVibracao(wrapCel, tela, telaCaixa) }
   )
 }
 
@@ -492,7 +491,6 @@ function iniciarVibracao(wrapCel, tela, telaCaixa) {
   const telaTween = gsap.to(tela, {
     backgroundColor: '#2a0850', repeat: -1, yoyo: true, duration: 0.5, ease: 'sine.inOut'
   })
-
   const vibTl = gsap.timeline({ repeat: -1, repeatDelay: 0.8 })
   vibTl
     .to(wrapCel, { x:  5, rotation:  1.5, duration: 0.05, ease: 'none' })
@@ -515,16 +513,23 @@ function iniciarVibracao(wrapCel, tela, telaCaixa) {
 }
 
 function zoomCelular(wrapCel, tela, telaCaixa) {
-  const rect = wrapCel.getBoundingClientRect()
+  const rect   = wrapCel.getBoundingClientRect()
+  const celW   = Math.min(180, vw() * 0.32)
+  const celH   = Math.min(340, vw() * 0.60)
+
   wrapCel.style.position = 'fixed'
   wrapCel.style.left     = rect.left + 'px'
   wrapCel.style.top      = rect.top  + 'px'
   wrapCel.style.margin   = '0'
   wrapCel.style.zIndex   = '500'
 
-  const scale  = Math.min((window.innerHeight * 0.88) / 340, (window.innerWidth * 0.85) / 180, 2.1)
-  const targetX = (window.innerWidth  / 2) - (rect.left + 90)
-  const targetY = (window.innerHeight / 2) - (rect.top  + 170)
+  const scale  = Math.min(
+    (vh() * 0.9)  / celH,
+    (vw() * 0.92) / celW,
+    2.4
+  )
+  const targetX = (vw() / 2) - (rect.left + celW / 2)
+  const targetY = (vh() / 2) - (rect.top  + celH / 2)
 
   gsap.to(wrapCel, {
     x: targetX, y: targetY, scale: scale, duration: 0.7, ease: 'power2.out',
@@ -533,21 +538,19 @@ function zoomCelular(wrapCel, tela, telaCaixa) {
 }
 
 // ═══════════════════════════════════════════════════════
-// LOCKSCREEN MELHORADA
+// LOCKSCREEN
 // ═══════════════════════════════════════════════════════
 function mostrarLockscreen(tela, wrapCel, telaCaixa) {
-  tela.innerHTML = ''; tela.style.position = 'relative'; tela.style.overflow = 'hidden'
-  tela.style.padding = '0'
+  tela.innerHTML = ''; tela.style.position = 'relative'
+  tela.style.overflow = 'hidden'; tela.style.padding = '0'
 
   const lock = document.createElement('div'); lock.classList.add('lockscreen')
 
-  // Topo — hora
-  const topo = document.createElement('div'); topo.classList.add('lock-topo')
+  const topo   = document.createElement('div'); topo.classList.add('lock-topo')
   const horaEl = document.createElement('div'); horaEl.classList.add('lock-hora')
   const dataEl = document.createElement('div'); dataEl.classList.add('lock-data')
   topo.appendChild(horaEl); topo.appendChild(dataEl)
 
-  // Notificação no meio
   const notif = document.createElement('div'); notif.classList.add('lock-notif')
   notif.innerHTML = `
     <div class="lock-notif-icon">💌</div>
@@ -557,8 +560,7 @@ function mostrarLockscreen(tela, wrapCel, telaCaixa) {
     </div>
   `
 
-  // Base — deslize
-  const base = document.createElement('div'); base.classList.add('lock-base')
+  const base    = document.createElement('div'); base.classList.add('lock-base')
   const bolinha = document.createElement('div'); bolinha.classList.add('lock-bolinha')
   const deslize = document.createElement('div'); deslize.classList.add('lock-deslize')
   deslize.textContent = 'toque para desbloquear'
@@ -569,9 +571,7 @@ function mostrarLockscreen(tela, wrapCel, telaCaixa) {
 
   function atualizarHora() {
     const n = new Date()
-    const h = String(n.getHours()).padStart(2, '0')
-    const m = String(n.getMinutes()).padStart(2, '0')
-    horaEl.textContent = h + ':' + m
+    horaEl.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0')
     const dias  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
     const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
     dataEl.textContent = dias[n.getDay()] + ', ' + n.getDate() + ' de ' + meses[n.getMonth()]
@@ -589,11 +589,10 @@ function mostrarLockscreen(tela, wrapCel, telaCaixa) {
 }
 
 // ═══════════════════════════════════════════════════════
-// CHAT APP
+// CHAT
 // ═══════════════════════════════════════════════════════
 function criarChatApp() {
   const app = document.createElement('div'); app.classList.add('chat-app')
-
   const header = document.createElement('div'); header.classList.add('chat-header')
   header.innerHTML = `
     <div class="chat-voltar">‹</div>
@@ -603,10 +602,9 @@ function criarChatApp() {
       <div class="chat-status">online</div>
     </div>
   `
-  const msgs = document.createElement('div'); msgs.classList.add('chat-msgs')
+  const msgs   = document.createElement('div'); msgs.classList.add('chat-msgs')
   const bottom = document.createElement('div'); bottom.classList.add('chat-bottom')
   bottom.innerHTML = `<div class="input-fake">Mensagem</div>`
-
   app.appendChild(header); app.appendChild(msgs); app.appendChild(bottom)
   return app
 }
@@ -618,29 +616,23 @@ function desbloquear(lock, chatApp, tela, wrapCel) {
   })
   setTimeout(() => {
     chatApp.classList.add('aberto')
-    const msgs = chatApp.querySelector('.chat-msgs')
-    iniciarConversa(msgs, chatApp, wrapCel)
+    iniciarConversa(chatApp.querySelector('.chat-msgs'), chatApp, wrapCel)
   }, 200)
 }
 
-// ═══════════════════════════════════════════════════════
-// CONVERSA
-// ═══════════════════════════════════════════════════════
 function esperar(ms) { return new Promise(r => setTimeout(r, ms)) }
 
 function criarDigitando(container) {
   const el = document.createElement('div'); el.classList.add('digitando')
   el.innerHTML = '<span></span><span></span><span></span>'
-  container.appendChild(el)
-  container.scrollTop = container.scrollHeight
+  container.appendChild(el); container.scrollTop = container.scrollHeight
   return el
 }
 
 function adicionarMsg(container, texto) {
   const el = document.createElement('div'); el.classList.add('msg', 'recebida')
   el.textContent = texto
-  container.appendChild(el)
-  container.scrollTop = container.scrollHeight
+  container.appendChild(el); container.scrollTop = container.scrollHeight
   somNotificacao()
 }
 
@@ -661,7 +653,6 @@ async function iniciarConversa(msgs, chatApp, wrapCel) {
   await enviar('Eu sempre vou torcer pelo teu sucesso e a tua vitória, te desejo tudo de bom minha princesa,', 2000)
   await enviar('Ah e antes que eu me esqueça, esse não é meu ultimo presente, talvez vc devesse voltar para a casa as 11 horas da manhã, talvez tenha outra surpresa te esperando lá 👀', 5000)
 
-  // Todas as mensagens enviadas — mostra hint de fechar e espera clique
   await esperar(800)
   mostrarHintFechar(chatApp, wrapCel)
 }
@@ -670,31 +661,23 @@ function mostrarHintFechar(chatApp, wrapCel) {
   const hint = document.createElement('div'); hint.classList.add('fechar-hint')
   hint.textContent = 'toque para fechar'
   chatApp.appendChild(hint)
-
-  // Qualquer toque/clique no celular fecha
   const cel = wrapCel.querySelector('.celular')
   cel.style.cursor = 'pointer'
   cel.addEventListener('click', () => {
-    hint.remove()
-    cel.style.cursor = 'default'
-    fecharCelular(wrapCel)
+    hint.remove(); cel.style.cursor = 'default'; fecharCelular(wrapCel)
   }, { once: true })
 }
 
 // ═══════════════════════════════════════════════════════
-// FECHAR CELULAR
+// FECHAR CELULAR + TIMER
 // ═══════════════════════════════════════════════════════
 function fecharCelular(wrapCel) {
   gsap.to(wrapCel, {
-    y: '+=' + (window.innerHeight + 400), opacity: 0,
-    duration: 1.0, ease: 'power2.in',
+    y: '+=' + (vh() + 400), opacity: 0, duration: 1.0, ease: 'power2.in',
     onComplete: () => { wrapCel.remove(); mostrarTimer() }
   })
 }
 
-// ═══════════════════════════════════════════════════════
-// TIMER
-// ═══════════════════════════════════════════════════════
 function mostrarTimer() {
   const wrap = document.createElement('div'); wrap.classList.add('timer-wrap')
   wrap.innerHTML = `
@@ -715,11 +698,11 @@ function iniciarContagem(display) {
     const diff = alvo - agora
     const h = Math.floor(diff / 3600000)
     const m = Math.floor((diff % 3600000) / 60000)
-    const s = Math.floor((diff % 60000)  / 1000)
+    const s = Math.floor((diff % 60000) / 1000)
     display.textContent =
-      String(h).padStart(2, '0') + ':' +
-      String(m).padStart(2, '0') + ':' +
-      String(s).padStart(2, '0')
+      String(h).padStart(2,'0') + ':' +
+      String(m).padStart(2,'0') + ':' +
+      String(s).padStart(2,'0')
   }
   atualizar(); setInterval(atualizar, 1000)
 }
