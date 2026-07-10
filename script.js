@@ -1,557 +1,628 @@
-// ═══════════════════════════════════════════════════════
-// ESTILOS INJETADOS
-// ═══════════════════════════════════════════════════════
-;(function injetarEstilos() {
-  const s = document.createElement('style')
-  s.textContent = `
-    .lockscreen {
-      position: absolute; inset: 0; border-radius: 20px;
-      background: linear-gradient(160deg, #0d0420 0%, #1a063a 60%, #0a0218 100%);
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: space-between; padding: 16px 0 20px;
-      cursor: pointer; z-index: 10; overflow: hidden;
-    }
-    .lock-topo {
-      display: flex; flex-direction: column; align-items: center; gap: 2px; margin-top: 6px;
-    }
-    .lock-hora {
-      font-size: clamp(2rem, 8vw, 3.4rem); color: #f0e8ff;
-      font-family: Georgia, serif; font-weight: 300; letter-spacing: -1px;
-      text-shadow: 0 0 30px rgba(160,100,255,0.4);
-    }
-    .lock-data {
-      font-size: clamp(0.5rem, 1.8vw, 0.62rem); color: #9a6fd5;
-      letter-spacing: 0.1em; text-transform: uppercase;
-    }
-    .lock-notif {
-      width: 88%; background: rgba(40,12,80,0.85);
-      border: 0.5px solid rgba(140,80,220,0.3);
-      border-radius: 12px; padding: 8px 10px;
-      display: flex; align-items: center; gap: 7px;
-      animation: notifPulse 2s ease-in-out infinite;
-    }
-    @keyframes notifPulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
-    .lock-notif-icon { font-size: clamp(1rem, 4vw, 1.3rem); flex-shrink: 0; }
-    .lock-notif-body { display: flex; flex-direction: column; gap: 1px; }
-    .lock-notif-app  { font-size: clamp(0.42rem, 1.5vw, 0.5rem); color: #7a5bb5; letter-spacing: 0.08em; text-transform: uppercase; }
-    .lock-notif-msg  { font-size: clamp(0.52rem, 1.8vw, 0.6rem); color: #d0b8f5; line-height: 1.4; }
-    .lock-base { display: flex; flex-direction: column; align-items: center; gap: 4px; }
-    .lock-bolinha { width: 32px; height: 4px; background: rgba(200,160,255,0.3); border-radius: 2px; }
-    .lock-deslize { font-size: clamp(0.42rem, 1.5vw, 0.5rem); color: #5a3a7a; letter-spacing: 0.15em; text-transform: uppercase; }
+'use strict'
 
-    .chat-app {
-      position: absolute; inset: 0; border-radius: 20px;
-      background: #0a031a; display: flex; flex-direction: column;
-      overflow: hidden; z-index: 9;
-      transform: translateY(100%);
-      transition: transform 0.45s cubic-bezier(0.4,0,0.2,1);
-    }
-    .chat-app.aberto { transform: translateY(0); }
-
-    .chat-header {
-      background: #100528; padding: 6px 8px;
-      display: flex; align-items: center; gap: 6px;
-      border-bottom: 0.5px solid #1e0d3a; flex-shrink: 0;
-    }
-    .chat-voltar { font-size: 0.9rem; color: #7a5bb5; }
-    .chat-avatar {
-      width: 24px; height: 24px; border-radius: 50%;
-      background: #5a1090; display: flex; align-items: center;
-      justify-content: center; font-size: 0.55rem; color: #e0d0ff; flex-shrink: 0;
-    }
-    .chat-info  { display: flex; flex-direction: column; gap: 1px; }
-    .chat-nome  { font-size: clamp(0.55rem, 2vw, 0.7rem); color: #e0d0ff; font-family: Georgia, serif; }
-    .chat-status { font-size: clamp(0.44rem, 1.6vw, 0.52rem); color: #4caf82; }
-
-    .chat-msgs {
-      flex: 1; overflow-y: scroll; padding: 6px 6px;
-      display: flex; flex-direction: column; gap: 4px;
-      scroll-behavior: smooth; -webkit-overflow-scrolling: touch;
-    }
-    .chat-msgs::-webkit-scrollbar { width: 2px; }
-    .chat-msgs::-webkit-scrollbar-thumb { background: #2a1a4a; border-radius: 1px; }
-
-    .msg {
-      max-width: 88%; padding: 5px 8px; border-radius: 12px;
-      font-size: clamp(0.52rem, 1.8vw, 0.62rem); line-height: 1.5;
-      word-break: break-word; animation: msgIn 0.22s ease;
-    }
-    @keyframes msgIn {
-      from { opacity: 0; transform: translateY(5px) scale(0.97); }
-      to   { opacity: 1; transform: none; }
-    }
-    .msg.recebida {
-      background: #1a0a38; color: #c9a7f5;
-      align-self: flex-start; border-bottom-left-radius: 3px;
-      border: 0.5px solid #2a1a4a;
-    }
-
-    .digitando {
-      display: flex; align-items: center; gap: 3px;
-      padding: 6px 8px; background: #1a0a38; border-radius: 12px;
-      border-bottom-left-radius: 3px; align-self: flex-start;
-      border: 0.5px solid #2a1a4a; animation: msgIn 0.22s ease;
-    }
-    .digitando span {
-      width: 3px; height: 3px; background: #7a5bb5;
-      border-radius: 50%; animation: dotbounce 1.1s ease-in-out infinite;
-    }
-    .digitando span:nth-child(2) { animation-delay: 0.16s; }
-    .digitando span:nth-child(3) { animation-delay: 0.32s; }
-    @keyframes dotbounce {
-      0%,60%,100% { transform: translateY(0); opacity: 0.4; }
-      30%          { transform: translateY(-3px); opacity: 1; }
-    }
-
-    .chat-bottom {
-      padding: 4px 6px; background: #100528;
-      border-top: 0.5px solid #1e0d3a; flex-shrink: 0;
-    }
-    .input-fake {
-      background: #1a0a38; border-radius: 12px; padding: 4px 8px;
-      font-size: clamp(0.5rem, 1.8vw, 0.58rem); color: #2a1a4a; font-family: Georgia, serif;
-    }
-
-    .fechar-hint {
-      font-size: clamp(0.44rem, 1.6vw, 0.52rem); color: #5a3a8a; text-align: center;
-      padding: 3px 0; letter-spacing: 0.1em; text-transform: uppercase;
-      animation: piscarHint 1.4s ease-in-out infinite; flex-shrink: 0;
-    }
-    @keyframes piscarHint { 0%,100%{opacity:1} 50%{opacity:0.2} }
-
-    .timer-wrap {
-      position: fixed; inset: 0; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      z-index: 2000; pointer-events: none; opacity: 0;
-      text-align: center; gap: 8px; padding: 20px;
-    }
-    .timer-label   { color: #9a6fd5; font-size: clamp(0.75rem, 3.5vw, 0.9rem); letter-spacing: 0.04em; }
-    .timer-display {
-      color: #e0d0ff; font-size: clamp(2rem, 10vw, 3.2rem);
-      font-family: Georgia, serif; letter-spacing: 0.08em;
-    }
-    .timer-sub { color: #5a3a8a; font-size: clamp(0.65rem, 3vw, 0.75rem); }
-
-    @media (max-width: 480px) {
-      .tela-caixa { justify-content: center; gap: 8px; }
-    }
-  `
-  document.head.appendChild(s)
-})()
-
-// ═══════════════════════════════════════════════════════
-// HELPERS RESPONSIVOS
-// ═══════════════════════════════════════════════════════
+/* ════════════════════════════════════════
+   GLOBALS
+════════════════════════════════════════ */
 const vw = () => window.innerWidth
 const vh = () => window.innerHeight
 
-// Calcula largura real da caixa (espelha o CSS)
-function larguraCaixa() { return Math.min(480, vw() * 0.88) }
+let audioCtx     = null
+let ringInterval = null
+let boxAberta    = false
+let cartaAtual   = 0        // próxima carta a soltar
+let cartaAtiva   = null     // carta atualmente em zoom
+let lineupCards  = []       // cartas no fileiro (em ordem)
+let telaCaixaEl  = null
+let boxWrapper   = null     // scene element (wrapper da caixa)
+let overlay      = null
 
-// Calcula spread das cartas baseado na tela
-function spreadCartas(index, total) {
-  const maxSpread = Math.min(220, (vw() * 0.85) / total)
-  return (index - (total - 1) / 2) * maxSpread
-}
+const CARTAS = [
+  { emoji:'💌', frente:'Para você, Pietra',       verso:'Você é incrível e merece\ntudo de bom nessa vida! 💜' },
+  { emoji:'🌸', frente:'Feliz Aniversário!',       verso:'Que esse ano seja lindo,\ncheio de alegria e conquistas\npra você 🌸' },
+  { emoji:'✨', frente:'Sempre contigo',            verso:'Eu sempre vou torcer pelo\nteu sucesso e a tua vitória,\nde coração ✨' },
+  { emoji:'🎂', frente:'Hoje é seu dia!',           verso:'Te desejo tudo de bom\ndo fundo do coração,\nminha princesa 💜' },
+  { emoji:'👀', frente:'Ah, e mais uma coisa...', verso:'Esse não é meu último presente...\nTalvez você devesse voltar pra\ncasa às 11h da manhã 👀\nTalvez tenha uma surpresa\nte esperando lá!' },
+]
 
-// ═══════════════════════════════════════════════════════
-// ÁUDIO
-// ═══════════════════════════════════════════════════════
-let audioCtx = null, ringInterval = null
-
+/* ════════════════════════════════════════
+   ÁUDIO
+════════════════════════════════════════ */
 function getCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)()
   return audioCtx
 }
 
-function criarRuido(dur) {
+function noise(dur) {
   const c = getCtx()
-  const buf = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate)
-  const d = buf.getChannelData(0)
+  const b = c.createBuffer(1, Math.ceil(c.sampleRate * dur), c.sampleRate)
+  const d = b.getChannelData(0)
   for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1
-  const src = c.createBufferSource(); src.buffer = buf; return src
+  const s = c.createBufferSource(); s.buffer = b; return s
 }
 
 function somEnvelope() {
-  const c = getCtx(), t = c.currentTime
-  const n = criarRuido(0.6), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'
-  f.frequency.setValueAtTime(3500, t); f.frequency.exponentialRampToValueAtTime(1200, t + 0.6); f.Q.value = 1.2
-  g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.35, t + 0.05)
-  g.gain.setValueAtTime(0.28, t + 0.2); g.gain.exponentialRampToValueAtTime(0.001, t + 0.6)
-  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.6)
+  const c=getCtx(), t=c.currentTime, n=noise(.6), f=c.createBiquadFilter(), g=c.createGain()
+  f.type='bandpass'; f.frequency.setValueAtTime(3500,t); f.frequency.exponentialRampToValueAtTime(1200,t+.6); f.Q.value=1.2
+  g.gain.setValueAtTime(.001,t); g.gain.linearRampToValueAtTime(.35,t+.05); g.gain.setValueAtTime(.28,t+.2); g.gain.exponentialRampToValueAtTime(.001,t+.6)
+  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t+.6)
 }
 
-function somAterrissagem() {
-  const c = getCtx(), t = c.currentTime
-  const o = c.createOscillator(), go = c.createGain()
-  o.type = 'sine'
-  o.frequency.setValueAtTime(120, t); o.frequency.exponentialRampToValueAtTime(30, t + 0.25)
-  go.gain.setValueAtTime(0.7, t); go.gain.exponentialRampToValueAtTime(0.001, t + 0.3)
-  o.connect(go); go.connect(c.destination); o.start(); o.stop(t + 0.3)
-  const n = criarRuido(0.15), f = c.createBiquadFilter(), gn = c.createGain()
-  f.type = 'lowpass'; f.frequency.value = 400
-  gn.gain.setValueAtTime(0.4, t); gn.gain.exponentialRampToValueAtTime(0.001, t + 0.15)
-  n.connect(f); f.connect(gn); gn.connect(c.destination); n.start(); n.stop(t + 0.15)
-}
-
-function somLaco() {
-  const c = getCtx(), t = c.currentTime
-  const n = criarRuido(0.5), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'
-  f.frequency.setValueAtTime(800, t); f.frequency.exponentialRampToValueAtTime(2500, t + 0.25)
-  f.frequency.exponentialRampToValueAtTime(600, t + 0.5); f.Q.value = 0.6
-  g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.2, t + 0.08)
-  g.gain.setValueAtTime(0.15, t + 0.3); g.gain.exponentialRampToValueAtTime(0.001, t + 0.5)
-  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.5)
+function somAterr() {
+  const c=getCtx(), t=c.currentTime
+  const o=c.createOscillator(), go=c.createGain()
+  o.type='sine'; o.frequency.setValueAtTime(120,t); o.frequency.exponentialRampToValueAtTime(30,t+.25)
+  go.gain.setValueAtTime(.7,t); go.gain.exponentialRampToValueAtTime(.001,t+.3)
+  o.connect(go); go.connect(c.destination); o.start(); o.stop(t+.3)
+  const n=noise(.15), f=c.createBiquadFilter(), gn=c.createGain()
+  f.type='lowpass'; f.frequency.value=400
+  gn.gain.setValueAtTime(.4,t); gn.gain.exponentialRampToValueAtTime(.001,t+.15)
+  n.connect(f); f.connect(gn); gn.connect(c.destination); n.start(); n.stop(t+.15)
 }
 
 function somTampa() {
-  const c = getCtx(), t = c.currentTime
-  const o = c.createOscillator(), fo = c.createBiquadFilter(), go = c.createGain()
-  o.type = 'sawtooth'; o.frequency.setValueAtTime(60, t); o.frequency.linearRampToValueAtTime(38, t + 1.0)
-  fo.type = 'lowpass'; fo.frequency.value = 300
-  go.gain.setValueAtTime(0.001, t); go.gain.linearRampToValueAtTime(0.12, t + 0.1)
-  go.gain.setValueAtTime(0.10, t + 0.8); go.gain.exponentialRampToValueAtTime(0.001, t + 1.1)
-  o.connect(fo); fo.connect(go); go.connect(c.destination); o.start(); o.stop(t + 1.1)
-  const n = criarRuido(1.0), fn = c.createBiquadFilter(), gn = c.createGain()
-  fn.type = 'bandpass'; fn.frequency.setValueAtTime(600, t); fn.Q.value = 0.5
-  gn.gain.setValueAtTime(0.001, t); gn.gain.linearRampToValueAtTime(0.08, t + 0.15)
-  gn.gain.exponentialRampToValueAtTime(0.001, t + 1.0)
-  n.connect(fn); fn.connect(gn); gn.connect(c.destination); n.start(); n.stop(t + 1.0)
+  const c=getCtx(), t=c.currentTime
+  const o=c.createOscillator(), fo=c.createBiquadFilter(), go=c.createGain()
+  o.type='sawtooth'; o.frequency.setValueAtTime(60,t); o.frequency.linearRampToValueAtTime(38,t+1)
+  fo.type='lowpass'; fo.frequency.value=300
+  go.gain.setValueAtTime(.001,t); go.gain.linearRampToValueAtTime(.12,t+.1); go.gain.setValueAtTime(.1,t+.8); go.gain.exponentialRampToValueAtTime(.001,t+1.1)
+  o.connect(fo); fo.connect(go); go.connect(c.destination); o.start(); o.stop(t+1.1)
+  const n=noise(1), fn=c.createBiquadFilter(), gn=c.createGain()
+  fn.type='bandpass'; fn.frequency.setValueAtTime(600,t); fn.Q.value=.5
+  gn.gain.setValueAtTime(.001,t); gn.gain.linearRampToValueAtTime(.08,t+.15); gn.gain.exponentialRampToValueAtTime(.001,t+1)
+  n.connect(fn); fn.connect(gn); gn.connect(c.destination); n.start(); n.stop(t+1)
 }
 
 function somCarta() {
-  const c = getCtx(), t = c.currentTime
-  const n = criarRuido(0.35), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'; f.frequency.setValueAtTime(2800, t); f.frequency.exponentialRampToValueAtTime(1600, t + 0.35); f.Q.value = 1.5
-  g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.22, t + 0.04)
-  g.gain.setValueAtTime(0.18, t + 0.15); g.gain.exponentialRampToValueAtTime(0.001, t + 0.35)
-  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.35)
+  const c=getCtx(), t=c.currentTime, n=noise(.35), f=c.createBiquadFilter(), g=c.createGain()
+  f.type='bandpass'; f.frequency.setValueAtTime(2800,t); f.frequency.exponentialRampToValueAtTime(1600,t+.35); f.Q.value=1.5
+  g.gain.setValueAtTime(.001,t); g.gain.linearRampToValueAtTime(.22,t+.04); g.gain.setValueAtTime(.18,t+.15); g.gain.exponentialRampToValueAtTime(.001,t+.35)
+  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t+.35)
 }
 
-function somCelularSubindo() {
-  const c = getCtx(), t = c.currentTime
-  const n = criarRuido(0.4), f = c.createBiquadFilter(), g = c.createGain()
-  f.type = 'bandpass'; f.frequency.setValueAtTime(1000, t); f.frequency.exponentialRampToValueAtTime(2200, t + 0.4); f.Q.value = 1.0
-  g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.18, t + 0.08)
-  g.gain.exponentialRampToValueAtTime(0.001, t + 0.4)
-  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t + 0.4)
+function somCelSobe() {
+  const c=getCtx(), t=c.currentTime, n=noise(.4), f=c.createBiquadFilter(), g=c.createGain()
+  f.type='bandpass'; f.frequency.setValueAtTime(1000,t); f.frequency.exponentialRampToValueAtTime(2200,t+.4); f.Q.value=1
+  g.gain.setValueAtTime(.001,t); g.gain.linearRampToValueAtTime(.18,t+.08); g.gain.exponentialRampToValueAtTime(.001,t+.4)
+  n.connect(f); f.connect(g); g.connect(c.destination); n.start(); n.stop(t+.4)
 }
 
-function somNotificacao() {
-  const c = getCtx(), t = c.currentTime
-  function ping(freq, ini, dur) {
-    const o = c.createOscillator(), g = c.createGain()
-    o.type = 'sine'; o.frequency.value = freq
-    g.gain.setValueAtTime(0.001, t + ini); g.gain.linearRampToValueAtTime(0.22, t + ini + 0.012)
-    g.gain.exponentialRampToValueAtTime(0.001, t + ini + dur)
-    o.connect(g); g.connect(c.destination); o.start(t + ini); o.stop(t + ini + dur)
-    const o2 = c.createOscillator(), g2 = c.createGain()
-    o2.type = 'sine'; o2.frequency.value = freq * 2
-    g2.gain.setValueAtTime(0.001, t + ini); g2.gain.linearRampToValueAtTime(0.07, t + ini + 0.01)
-    g2.gain.exponentialRampToValueAtTime(0.001, t + ini + dur * 0.6)
-    o2.connect(g2); g2.connect(c.destination); o2.start(t + ini); o2.stop(t + ini + dur)
+function somNotif() {
+  const c=getCtx(), t=c.currentTime
+  function ping(fr,ini,dur) {
+    const o=c.createOscillator(), g=c.createGain()
+    o.type='sine'; o.frequency.value=fr
+    g.gain.setValueAtTime(.001,t+ini); g.gain.linearRampToValueAtTime(.22,t+ini+.012); g.gain.exponentialRampToValueAtTime(.001,t+ini+dur)
+    o.connect(g); g.connect(c.destination); o.start(t+ini); o.stop(t+ini+dur)
+    const o2=c.createOscillator(), g2=c.createGain()
+    o2.type='sine'; o2.frequency.value=fr*2
+    g2.gain.setValueAtTime(.001,t+ini); g2.gain.linearRampToValueAtTime(.07,t+ini+.01); g2.gain.exponentialRampToValueAtTime(.001,t+ini+dur*.6)
+    o2.connect(g2); g2.connect(c.destination); o2.start(t+ini); o2.stop(t+ini+dur)
   }
-  ping(1318, 0.00, 0.18)
-  ping(1568, 0.10, 0.18)
-  ping(2093, 0.20, 0.30)
+  ping(1318,.00,.18); ping(1568,.10,.18); ping(2093,.20,.30)
 }
 
-function tocarBuzz() {
-  const c = getCtx(), t = c.currentTime
-  function pulso(ini, dur) {
-    const o = c.createOscillator(), f = c.createBiquadFilter(), g = c.createGain()
-    o.type = 'square'; o.frequency.value = 55; f.type = 'lowpass'; f.frequency.value = 180
-    g.gain.setValueAtTime(0.001, t + ini); g.gain.linearRampToValueAtTime(0.35, t + ini + 0.015)
-    g.gain.setValueAtTime(0.32, t + ini + dur - 0.02); g.gain.linearRampToValueAtTime(0.001, t + ini + dur)
-    o.connect(f); f.connect(g); g.connect(c.destination); o.start(t + ini); o.stop(t + ini + dur)
+function buzz() {
+  const c=getCtx(), t=c.currentTime
+  function p(i,d) {
+    const o=c.createOscillator(), f=c.createBiquadFilter(), g=c.createGain()
+    o.type='square'; o.frequency.value=55; f.type='lowpass'; f.frequency.value=180
+    g.gain.setValueAtTime(.001,t+i); g.gain.linearRampToValueAtTime(.35,t+i+.015)
+    g.gain.setValueAtTime(.32,t+i+d-.02); g.gain.linearRampToValueAtTime(.001,t+i+d)
+    o.connect(f); f.connect(g); g.connect(c.destination); o.start(t+i); o.stop(t+i+d)
   }
-  pulso(0.00, 0.12); pulso(0.18, 0.12); pulso(0.36, 0.30)
+  p(0,.12); p(.18,.12); p(.36,.30)
 }
 
-function iniciarRing() { tocarBuzz(); ringInterval = setInterval(tocarBuzz, 1400) }
-function pararRing()   { clearInterval(ringInterval); ringInterval = null }
+function startRing() { buzz(); ringInterval = setInterval(buzz, 1400) }
+function stopRing()  { clearInterval(ringInterval); ringInterval = null }
 
-// ═══════════════════════════════════════════════════════
-// ENVELOPE
-// ═══════════════════════════════════════════════════════
-const envelope     = document.getElementById('envelope')
-const telaEnvelope = document.getElementById('telaEnvelope')
+/* ════════════════════════════════════════
+   OVERLAY (fundo escuro ao zoomar carta)
+════════════════════════════════════════ */
+function showOverlay() {
+  if (overlay) return
+  overlay = document.createElement('div')
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(5,1,20,.72);z-index:289;'
+  gsap.set(overlay, { opacity: 0 })
+  document.body.appendChild(overlay)
+  gsap.to(overlay, { opacity: 1, duration: .3 })
+}
 
-envelope.addEventListener('click', () => { getCtx(); abrirEnvelope() })
+function hideOverlay() {
+  if (!overlay) return
+  const o = overlay; overlay = null
+  gsap.to(o, { opacity: 0, duration: .3, onComplete: () => o.remove() })
+}
+
+/* ════════════════════════════════════════
+   ENVELOPE
+════════════════════════════════════════ */
+const envEl  = document.getElementById('envelope')
+const telaEnv = document.getElementById('telaEnvelope')
+
+envEl.addEventListener('click', () => { getCtx(); abrirEnvelope() })
 
 function abrirEnvelope() {
   somEnvelope()
-  gsap.to(envelope, {
-    y: -200, opacity: 0, scale: 0.8, duration: 0.8, ease: 'power2.in',
-    onComplete: () => { telaEnvelope.style.display = 'none'; mostrarCaixa() }
+  gsap.to(envEl, {
+    y: -200, opacity: 0, scale: .8, duration: .8, ease: 'power2.in',
+    onComplete: () => { telaEnv.style.display = 'none'; mostrarCaixa() }
   })
 }
 
-// ═══════════════════════════════════════════════════════
-// CAIXA
-// ═══════════════════════════════════════════════════════
+/* ════════════════════════════════════════
+   CAIXA 3D
+════════════════════════════════════════ */
 function mostrarCaixa() {
-  const telaCaixa = document.createElement('div'); telaCaixa.classList.add('tela-caixa')
-  const wrapper   = document.createElement('div'); wrapper.classList.add('caixa-wrapper')
-  const tampa     = document.createElement('div'); tampa.classList.add('tampa')
-  const laco      = document.createElement('div'); laco.classList.add('laco')
-  const loopEsq   = document.createElement('div'); loopEsq.classList.add('laco-loop', 'laco-loop-esq')
-  const loopDir   = document.createElement('div'); loopDir.classList.add('laco-loop', 'laco-loop-dir')
-  const no        = document.createElement('div'); no.classList.add('laco-no')
+  telaCaixaEl = document.createElement('div')
+  telaCaixaEl.className = 'tela-caixa'
 
-  laco.appendChild(loopEsq); laco.appendChild(no); laco.appendChild(loopDir)
-  tampa.appendChild(laco)
-
-  const fitaH = document.createElement('div'); fitaH.classList.add('fita-h')
-  const fitaV = document.createElement('div'); fitaV.classList.add('fita-v')
-  const corpo = document.createElement('div'); corpo.classList.add('corpo-caixa')
+  const scene = build3DBox()
+  telaCaixaEl.appendChild(scene)
 
   const dica = document.createElement('p')
-  dica.style.color = '#c9a7f5'; dica.style.fontSize = 'clamp(0.7rem, 3vw, 0.85rem)'
+  dica.id = 'boxDica'
+  dica.className = 'box-dica'
   dica.textContent = 'clique na caixa'
+  telaCaixaEl.appendChild(dica)
 
-  wrapper.appendChild(tampa); wrapper.appendChild(fitaH)
-  wrapper.appendChild(fitaV); wrapper.appendChild(corpo)
-  telaCaixa.appendChild(wrapper); telaCaixa.appendChild(dica)
-  document.body.appendChild(telaCaixa)
-
-  gsap.fromTo(wrapper,
-    { y: -900, opacity: 0 },
-    { y: 0, opacity: 1, duration: 1.1, ease: 'bounce.out', onComplete: () => somAterrissagem() }
-  )
-
-  wrapper.addEventListener('click', () => {
-    abrirCaixa(tampa, loopEsq, loopDir, no, fitaV, fitaH, dica, wrapper, telaCaixa)
-  })
+  document.body.appendChild(telaCaixaEl)
+  animarQueda(boxWrapper)
 }
 
-// ═══════════════════════════════════════════════════════
-// CARTAS
-// ═══════════════════════════════════════════════════════
-const cartas = [
-  { emoji: '💌', texto: 'Você é incrível, Pietra!' },
-  { emoji: '🌸', texto: 'Feliz aniversário!' },
-  { emoji: '✨', texto: 'Que esse ano seja lindo pra você' },
-  { emoji: '🎂', texto: 'Muitas felicidades!' },
-  { emoji: '💜', texto: 'Com carinho 💜' },
-]
+function build3DBox() {
+  const BW = Math.min(220, vw() * .55)
+  const BH = Math.min(148, vw() * .38)
+  const BD = BW * .68
+  const LH = Math.max(18, BH * .14)
 
-function abrirCaixa(tampa, loopEsq, loopDir, no, fitaV, fitaH, dica, wrapper, telaCaixa) {
-  wrapper.style.pointerEvents = 'none'
-  gsap.to(dica, { opacity: 0, duration: 0.3 })
+  // Scene (perspective)
+  const scene = document.createElement('div')
+  scene.style.cssText = `perspective:700px;perspective-origin:50% 38%;cursor:pointer;width:${BW}px;position:relative;`
+  boxWrapper = scene
 
-  somLaco()
-  gsap.to(loopEsq, { x: -70, y: -40, opacity: 0, rotation: -40, duration: 0.6, ease: 'power2.out' })
-  gsap.to(loopDir, { x:  70, y: -40, opacity: 0, rotation:  40, duration: 0.6, ease: 'power2.out' })
-  gsap.to(no,      { scale: 0, opacity: 0, duration: 0.4, ease: 'power2.in' })
-  gsap.to([fitaV, fitaH], { opacity: 0, duration: 0.5, delay: 0.3 })
+  // Box group (ângulo 3D)
+  const bg = document.createElement('div')
+  bg.style.cssText = `transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transform:rotateX(14deg) rotateY(-24deg);width:${BW}px;height:${BH}px;position:relative;margin-top:${BD*.28}px;`
 
-  setTimeout(() => somTampa(), 800)
-  gsap.to(tampa, { rotateX: -130, duration: 1.1, delay: 0.8, ease: 'power2.inOut' })
-
-  cartas.forEach((carta, i) => {
-    setTimeout(() => { somCarta(); criarCarta(carta, i, cartas.length) }, 1800 + i * 600)
-  })
-
-  const tempoCartas = 1800 + cartas.length * 600 + 400
-  setTimeout(() => mostrarCelular(telaCaixa), tempoCartas)
-}
-
-function criarCarta(carta, index, total) {
-  const el  = document.createElement('div')
-  const cx  = vw() / 2
-  const cy  = vh() / 2
-
-  // Tamanho responsivo da carta
-  const largura  = Math.min(240, vw() * 0.55)
-  const spread   = spreadCartas(index, total)
-  const rotacao  = (index - (total - 1) / 2) * 8
-  const subirY   = Math.min(300, vh() * 0.38)
-  const padding  = Math.min(28, vw() * 0.05)
-  const fontSize = Math.min(1.25, vw() * 0.028) + 'rem'
-  const emojiFz  = Math.min(3, vw() * 0.07) + 'rem'
-
-  el.style.cssText = `
-    position: fixed;
-    left: ${cx - largura / 2}px;
-    top: ${cy + 60}px;
-    width: ${largura}px;
-    background: #2a0a50;
-    border: 1px solid #7a4fbf;
-    border-radius: 10px;
-    padding: ${padding}px;
-    text-align: center;
-    color: #c9a7f5;
-    font-size: ${fontSize};
-    line-height: 1.6;
-    z-index: 100;
-    opacity: 0;
-    cursor: grab;
-    user-select: none;
-    touch-action: none;
-  `
-  el.innerHTML = `
-    <div style="font-size:${emojiFz}; margin-bottom:10px">${carta.emoji}</div>
-    <div style="white-space: pre-line">${carta.texto}</div>
-  `
-  document.body.appendChild(el)
-
-  gsap.to(el, {
-    y: -subirY, x: spread, rotation: rotacao, opacity: 1,
-    duration: 1.6, ease: 'elastic.out(1, 0.6)',
-    onComplete: () => ativarArrasto(el, rotacao)
-  })
-}
-
-// ═══════════════════════════════════════════════════════
-// ARRASTAR CARTAS
-// ═══════════════════════════════════════════════════════
-function ativarArrasto(el, rotacaoInicial) {
-  let arrastando = false, offsetX = 0, offsetY = 0, fixado = false
-
-  function fixarPosicao() {
-    if (fixado) return
-    const rect = el.getBoundingClientRect()
-    gsap.killTweensOf(el)
-    el.style.left = rect.left + 'px'; el.style.top = rect.top + 'px'
-    gsap.set(el, { x: 0, y: 0, rotation: rotacaoInicial })
-    fixado = true
+  // Helper: cria uma face
+  function mk(w, h, bgCol, tf, ex = '') {
+    const d = document.createElement('div')
+    d.style.cssText = `position:absolute;width:${w}px;height:${h}px;background:${bgCol};transform:${tf};backface-visibility:hidden;-webkit-backface-visibility:hidden;${ex}`
+    return d
   }
 
-  el.addEventListener('mousedown', (e) => {
-    fixarPosicao(); arrastando = true
-    const rect = el.getBoundingClientRect()
-    offsetX = e.clientX - rect.left; offsetY = e.clientY - rect.top
-    gsap.to(el, { scale: 1.05, boxShadow: '0 12px 40px rgba(0,0,0,0.5)', duration: 0.2 })
-    el.style.cursor = 'grabbing'; el.style.zIndex = '999'
-    e.preventDefault()
-  })
-  document.addEventListener('mousemove', (e) => {
-    if (!arrastando) return
-    el.style.left = (e.clientX - offsetX) + 'px'; el.style.top = (e.clientY - offsetY) + 'px'
-  })
-  document.addEventListener('mouseup', () => {
-    if (!arrastando) return; arrastando = false
-    el.style.cursor = 'grab'
-    gsap.to(el, { scale: 1, boxShadow: 'none', duration: 0.2 })
-  })
-  el.addEventListener('touchstart', (e) => {
-    fixarPosicao()
-    const t = e.touches[0], rect = el.getBoundingClientRect()
-    offsetX = t.clientX - rect.left; offsetY = t.clientY - rect.top
-    gsap.killTweensOf(el); gsap.to(el, { scale: 1.05, duration: 0.2 })
-    el.style.zIndex = '999'; e.preventDefault()
-  }, { passive: false })
-  el.addEventListener('touchmove', (e) => {
-    const t = e.touches[0]
-    el.style.left = (t.clientX - offsetX) + 'px'; el.style.top = (t.clientY - offsetY) + 'px'
-    e.preventDefault()
-  }, { passive: false })
-  el.addEventListener('touchend', () => gsap.to(el, { scale: 1, duration: 0.2 }))
+  // ── Face frontal (com fita) ──
+  const front = mk(BW, BH, 'linear-gradient(150deg,#6820a8,#4a0e82)', `translateZ(${BD/2}px)`,
+    `border:2px solid #9a5fdf;box-shadow:inset 0 0 30px rgba(160,80,255,.15);`)
+  const rH = document.createElement('div')
+  rH.style.cssText = `position:absolute;width:100%;height:${Math.max(6,BH*.07)}px;background:#e855a0;top:${BH*.44}px;`
+  const rV = document.createElement('div')
+  rV.style.cssText = `position:absolute;width:${Math.max(5,BW*.054)}px;height:100%;background:#e855a0;left:${BW*.473}px;`
+  front.appendChild(rH); front.appendChild(rV)
+
+  // ── Face direita (visível no ângulo) ──
+  const right = mk(BD, BH, 'linear-gradient(90deg,#3a0a60,#2e0850)', `rotateY(90deg) translateZ(${BW/2}px)`,
+    `left:${(BW-BD)/2}px;border:1px solid #6a3fa0;`)
+  const rrV = document.createElement('div')
+  rrV.style.cssText = `position:absolute;width:${Math.max(5,BD*.08)}px;height:100%;background:#c8408a;left:${BD*.47}px;`
+  right.appendChild(rrV)
+
+  const left_  = mk(BD, BH, '#2e0850',  `rotateY(-90deg) translateZ(${BW/2}px)`,    `left:${(BW-BD)/2}px;`)
+  const back_  = mk(BW, BH, '#380a70',  `rotateY(180deg) translateZ(${BD/2}px)`)
+  const bot    = mk(BW, BD, '#1e0540',  `rotateX(-90deg) translateZ(${BH/2}px)`,    `top:${(BH-BD)/2}px;border:1px solid #4a2080;`)
+  const topInner = mk(BW, BD, '#120330', `rotateX(90deg) translateZ(${-BH/2}px)`,  `top:${(BH-BD)/2}px;`)
+
+  bg.appendChild(back_); bg.appendChild(left_); bg.appendChild(bot); bg.appendChild(topInner)
+  bg.appendChild(front); bg.appendChild(right)
+
+  // ── Tampa ──
+  const lid = document.createElement('div')
+  lid.style.cssText = `position:absolute;top:${-LH}px;left:-6px;width:${BW+12}px;height:${LH}px;transform-style:preserve-3d;-webkit-transform-style:preserve-3d;transform-origin:50% 100%;pointer-events:none;`
+
+  const lF   = mk(BW+12, LH, 'linear-gradient(180deg,#8830c8,#5a10a0)', `translateZ(${BD/2+5}px)`,      `border:2px solid #c080f0;border-radius:6px 6px 0 0;`)
+  const lR   = mk(BD+10, LH, '#4e18a0', `rotateY(90deg) translateZ(${(BW+12)/2}px)`,                   `left:${((BW+12)-(BD+10))/2}px;border:1px solid #8050c0;`)
+  const lL   = mk(BD+10, LH, '#4a1490', `rotateY(-90deg) translateZ(${(BW+12)/2}px)`,                  `left:${((BW+12)-(BD+10))/2}px;`)
+  const lB   = mk(BW+12, LH, '#3a0870', `rotateY(180deg) translateZ(${BD/2+5}px)`)
+  const lTop = mk(BW+12, BD+10, 'linear-gradient(135deg,#9040d0,#7020b0)', `rotateX(90deg) translateZ(${LH}px)`,
+    `top:${-(BD+10)/2+(LH/2)}px;left:-6px;border:1.5px solid #c080f0;border-radius:4px;`)
+
+  // Fita na tampa
+  const ltRH = document.createElement('div')
+  ltRH.style.cssText = `position:absolute;width:100%;height:${Math.max(4,(BD+10)*.1)}px;background:#ff70c0;top:${(BD+10)*.44}px;`
+  const ltRV = document.createElement('div')
+  ltRV.style.cssText = `position:absolute;width:${Math.max(4,(BW+12)*.05)}px;height:100%;background:#ff70c0;left:${(BW+12)*.473}px;`
+  const bow = document.createElement('div')
+  bow.style.cssText = `position:absolute;width:100%;text-align:center;top:30%;font-size:${Math.max(14,BW*.09)}px;`
+  bow.textContent = '🎀'
+  lTop.appendChild(ltRH); lTop.appendChild(ltRV); lTop.appendChild(bow)
+
+  // Fita na face frontal da tampa
+  const lRibH = document.createElement('div')
+  lRibH.style.cssText = `position:absolute;width:100%;height:3px;background:#ff70c0;bottom:0;`
+  const bowF = document.createElement('div')
+  bowF.style.cssText = `position:absolute;width:100%;text-align:center;top:50%;transform:translateY(-50%);font-size:${Math.max(12,LH*.6)}px;`
+  bowF.textContent = '🎀'
+  lF.appendChild(lRibH); lF.appendChild(bowF)
+
+  lid.appendChild(lB); lid.appendChild(lL); lid.appendChild(lR); lid.appendChild(lTop); lid.appendChild(lF)
+
+  // Guarda referências
+  bg._lid  = lid
+  bg._dims = { BW, BH, BD, LH }
+  scene._bg = bg
+
+  bg.appendChild(lid)
+  scene.appendChild(bg)
+
+  scene.addEventListener('click', () => onBoxClick(scene))
+  return scene
 }
 
-// ═══════════════════════════════════════════════════════
-// CELULAR
-// ═══════════════════════════════════════════════════════
-function mostrarCelular(telaCaixa) {
-  const wrapCel = document.createElement('div'); wrapCel.classList.add('celular-wrapper')
-  const celular = document.createElement('div'); celular.classList.add('celular')
-  const speaker = document.createElement('div'); speaker.classList.add('celular-speaker')
-  const camera  = document.createElement('div'); camera.classList.add('celular-camera')
-  const tela    = document.createElement('div'); tela.classList.add('celular-tela')
-  const home    = document.createElement('div'); home.classList.add('celular-home')
-  const vol1    = document.createElement('div'); vol1.classList.add('celular-botao-vol', 'um')
-  const vol2    = document.createElement('div'); vol2.classList.add('celular-botao-vol', 'dois')
-  const power   = document.createElement('div'); power.classList.add('celular-botao-power')
+/* ── Animação de queda da caixa ── */
+function animarQueda(scene) {
+  const bg   = scene._bg
+  const dims = bg ? bg._dims : { BH: 120 }
+  const BH   = dims.BH
 
-  const emojiFz  = Math.min(2, vw() * 0.05) + 'rem'
-  const textFz   = Math.min(0.58, vw() * 0.014) + 'rem'
-  const nameFz   = Math.min(0.65, vw() * 0.016) + 'rem'
+  gsap.set(scene, { y: -vh() * 1.15, rotateZ: 14, opacity: 0 })
 
-  tela.innerHTML = `
-    <div style="font-size:${emojiFz}; animation: notifPulse 1.8s ease-in-out infinite;">💌</div>
-    <div style="font-size:${textFz}; color:#9a6fd5; margin-top:6px; letter-spacing:0.05em; animation: notifPulse 1.8s ease-in-out infinite 0.3s;">mensagem nova</div>
-    <div style="font-size:${nameFz}; color:#c9a7f5; margin-top:3px; animation: notifPulse 1.8s ease-in-out infinite 0.6s;">Tarek 💌</div>
+  gsap.timeline()
+    .to(scene, { opacity: 1, duration: .08 })
+    .to(scene, { y: 8, rotateZ: 0, duration: .72, ease: 'power3.in' })
+    .to(scene, { scaleY: .78, scaleX: 1.16, duration: .065, ease: 'power1.out' })
+    .to(scene, { scaleY: 1, scaleX: 1, y: -BH * .28, duration: .22, ease: 'power2.out' })
+    .to(scene, { y: 4, duration: .18, ease: 'power2.in' })
+    .to(scene, { scaleY: .93, scaleX: 1.06, duration: .05 })
+    .to(scene, { scaleY: 1, scaleX: 1, y: 0, duration: .18, ease: 'power1.out',
+        onComplete: () => somAterr() })
+}
+
+/* ════════════════════════════════════════
+   CLIQUE NA CAIXA
+════════════════════════════════════════ */
+function onBoxClick(scene) {
+  if (cartaAtiva) return
+
+  const bg  = scene._bg
+  const lid = bg ? bg._lid : null
+
+  // Primeiro clique: abre a tampa
+  if (!boxAberta) {
+    boxAberta = true
+    somTampa()
+    if (lid) gsap.to(lid, { rotateX: -122, duration: 1.1, ease: 'back.out(1.1)' })
+    setTimeout(() => {
+      const d = document.getElementById('boxDica')
+      if (d) d.textContent = 'clique para pegar uma carta'
+    }, 800)
+    return
+  }
+
+  if (cartaAtual >= CARTAS.length) return
+
+  // Solta a próxima carta
+  const idx = cartaAtual++
+  liberarCarta(CARTAS[idx], idx)
+
+  const d = document.getElementById('boxDica')
+  if (d) {
+    const rem = CARTAS.length - cartaAtual
+    d.textContent = rem > 0 ? `mais ${rem} carta${rem > 1 ? 's' : ''}` : '✦'
+  }
+}
+
+/* ════════════════════════════════════════
+   DIMENSÕES DAS CARTAS
+════════════════════════════════════════ */
+function cardDims() {
+  const w = Math.min(268, vw() * .82)
+  return { w, h: w * 1.5 }
+}
+
+function lineupPos(slot) {
+  const total  = CARTAS.length
+  const gap    = Math.min(8, vw() * .016)
+  const cw     = Math.min(66, (vw() - 28 - gap * (total - 1)) / total)
+  const ch     = cw * 1.5
+  const totalW = total * cw + (total - 1) * gap
+  const x      = (vw() - totalW) / 2 + slot * (cw + gap)
+  const y      = vh() - ch - 14
+  return { x, y, w: cw, h: ch }
+}
+
+/* ════════════════════════════════════════
+   CONSTRUIR CARTA
+════════════════════════════════════════ */
+function buildCard(carta, index) {
+  const { w: CW, h: CH } = cardDims()
+
+  const el = document.createElement('div')
+  el.className = 'card'
+  el.style.cssText = `width:${CW}px;height:${CH}px;z-index:300;`
+  el.dataset.state = 'front'
+  el.dataset.index = index
+
+  // Frente
+  const front = document.createElement('div')
+  front.className = 'card-face card-front'
+  front.innerHTML = `
+    <div class="card-corner tl">${carta.emoji}</div>
+    <div class="card-corner br">${carta.emoji}</div>
+    <div style="font-size:${CW*.17}px;margin-bottom:10px;">${carta.emoji}</div>
+    <div style="font-size:${Math.max(13,CW*.088)}px;color:#e0d0ff;text-align:center;padding:0 12px;line-height:1.5;">${carta.frente}</div>
+    <div class="card-hint" style="font-size:${Math.max(9,CW*.058)}px;color:#5a3a8a;margin-top:auto;letter-spacing:.1em;text-transform:uppercase;opacity:0;transition:opacity .3s;"></div>
   `
 
-  celular.appendChild(speaker); celular.appendChild(camera); celular.appendChild(tela)
-  celular.appendChild(home);    celular.appendChild(vol1);   celular.appendChild(vol2); celular.appendChild(power)
-  wrapCel.appendChild(celular); telaCaixa.appendChild(wrapCel)
+  // Verso
+  const back = document.createElement('div')
+  back.className = 'card-face card-back'
+  back.innerHTML = `
+    <div class="card-corner tl">✦</div>
+    <div class="card-corner br">✦</div>
+    <div style="font-size:${Math.max(10,CW*.072)}px;color:#c9a7f5;text-align:center;white-space:pre-line;line-height:1.7;padding:0 10px;">${carta.verso}</div>
+    <div class="back-hint" style="font-size:${Math.max(9,CW*.058)}px;color:#5a3a8a;margin-top:auto;letter-spacing:.1em;text-transform:uppercase;">toque para guardar</div>
+  `
 
-  somCelularSubindo()
-  gsap.fromTo(wrapCel,
-    { y: 300, opacity: 0 },
-    { y: 0, opacity: 1, duration: 1.2, ease: 'back.out(1.7)', onComplete: () => iniciarVibracao(wrapCel, tela, telaCaixa) }
-  )
+  el.appendChild(front)
+  el.appendChild(back)
+  return el
 }
 
-function iniciarVibracao(wrapCel, tela, telaCaixa) {
-  const telaTween = gsap.to(tela, {
-    backgroundColor: '#2a0850', repeat: -1, yoyo: true, duration: 0.5, ease: 'sine.inOut'
-  })
-  const vibTl = gsap.timeline({ repeat: -1, repeatDelay: 0.8 })
-  vibTl
-    .to(wrapCel, { x:  5, rotation:  1.5, duration: 0.05, ease: 'none' })
-    .to(wrapCel, { x: -5, rotation: -1.5, duration: 0.05, ease: 'none' })
-    .to(wrapCel, { x:  4, rotation:  1.2, duration: 0.05, ease: 'none' })
-    .to(wrapCel, { x: -4, rotation: -1.2, duration: 0.05, ease: 'none' })
-    .to(wrapCel, { x:  2, rotation:  0.6, duration: 0.05, ease: 'none' })
-    .to(wrapCel, { x:  0, rotation:  0,   duration: 0.07, ease: 'none' })
+/* ════════════════════════════════════════
+   SOLTAR CARTA (zoom da caixa para centro)
+════════════════════════════════════════ */
+function liberarCarta(carta, index) {
+  const el = buildCard(carta, index)
+  document.body.appendChild(el)
+  cartaAtiva = el
+  showOverlay()
 
-  iniciarRing()
+  const { w: CW, h: CH } = cardDims()
+  const rect = boxWrapper.getBoundingClientRect()
+  const bCx  = rect.left + rect.width  / 2
+  const bCy  = rect.top  + rect.height / 2
+
+  gsap.set(el, {
+    position: 'fixed',
+    left: bCx - CW / 2, top: bCy - CH / 2,
+    scale: .06, opacity: 0, rotateY: -30, rotateZ: 8
+  })
+
+  somCarta()
+  gsap.to(el, {
+    left: vw() / 2 - CW / 2,
+    top:  vh() / 2 - CH / 2,
+    scale: 1, opacity: 1, rotateY: 0, rotateZ: 0,
+    duration: .8, ease: 'back.out(1.4)',
+    onComplete: () => {
+      const hint = el.querySelector('.card-hint')
+      if (hint) { hint.textContent = 'toque para virar'; hint.style.opacity = '1' }
+    }
+  })
+
+  el.onclick = () => onCartaClick(el, index, false)
+}
+
+/* ════════════════════════════════════════
+   CLIQUE NA CARTA (virar / guardar)
+════════════════════════════════════════ */
+function onCartaClick(el, index, fromLineup) {
+  const state = el.dataset.state
+  if (state === 'flipping' || state === 'moving') return
+
+  if (state === 'front') {
+    // Vira para o verso
+    el.dataset.state = 'flipping'
+    gsap.to(el, {
+      rotateY: 180, duration: .55, ease: 'power2.inOut',
+      onComplete: () => { el.dataset.state = 'back' }
+    })
+
+  } else if (state === 'back') {
+    // Manda para o fileiro ou retorna
+    el.dataset.state = 'moving'
+    cartaAtiva = null
+    hideOverlay()
+
+    if (fromLineup) {
+      retornarFileira(el, index)
+    } else {
+      enviarFileira(el, index)
+    }
+  }
+}
+
+/* ════════════════════════════════════════
+   FILEIRO DE CARTAS
+════════════════════════════════════════ */
+function enviarFileira(el, index) {
+  const slot = lineupCards.length
+  el.dataset.slot = slot
+  lineupCards.push(el)
+
+  const pos = lineupPos(slot)
+
+  gsap.to(el, {
+    left: pos.x, top: pos.y,
+    width: pos.w, height: pos.h,
+    rotateY: 0, rotateZ: 0, scale: 1,
+    zIndex: 30 + slot,
+    duration: .7, ease: 'back.out(1.3)',
+    onComplete: () => {
+      el.dataset.state = 'lined'
+      el.onclick = () => onLineupClick(el, index)
+
+      // Reposiciona as cartas já no fileiro (caso dimensão tela tenha mudado)
+      lineupCards.forEach((c, s) => {
+        if (c !== el) {
+          const p = lineupPos(s)
+          gsap.to(c, { left: p.x, top: p.y, width: p.w, height: p.h, duration: .4, ease: 'power2.out' })
+        }
+      })
+
+      // Todas as cartas no fileiro → mostra celular
+      if (lineupCards.length === CARTAS.length) {
+        setTimeout(() => mostrarCelular(telaCaixaEl), 900)
+      }
+    }
+  })
+}
+
+function retornarFileira(el, index) {
+  const slot = parseInt(el.dataset.slot)
+  const pos  = lineupPos(slot)
+
+  gsap.to(el, {
+    left: pos.x, top: pos.y,
+    width: pos.w, height: pos.h,
+    rotateY: 0, rotateZ: 0, scale: 1,
+    zIndex: 30 + slot,
+    duration: .5, ease: 'power2.inOut',
+    onComplete: () => {
+      el.dataset.state = 'lined'
+      el.onclick = () => onLineupClick(el, index)
+    }
+  })
+}
+
+/* ── Clique em carta no fileiro ── */
+function onLineupClick(el, index) {
+  if (cartaAtiva) return
+
+  cartaAtiva = el
+  showOverlay()
+
+  // Traz esta carta para cima, as outras ficam na ordem normal
+  lineupCards.forEach((c, i) => {
+    gsap.set(c, { zIndex: c === el ? 100 : 30 + i })
+  })
+
+  const { w: CW, h: CH } = cardDims()
+
+  // Sempre mostra a frente primeiro
+  gsap.set(el, { rotateY: 0 })
+  el.dataset.state = 'front'
+
+  const hint = el.querySelector('.card-hint')
+  if (hint) { hint.textContent = 'toque para virar'; hint.style.opacity = '1' }
+  const bh = el.querySelector('.back-hint')
+  if (bh) bh.textContent = 'toque para fechar'
+
+  gsap.to(el, {
+    left: vw() / 2 - CW / 2,
+    top:  vh() / 2 - CH / 2,
+    width: CW, height: CH,
+    zIndex: 300,
+    duration: .5, ease: 'back.out(1.4)'
+  })
+
+  el.onclick = () => onCartaClick(el, index, true)
+}
+
+/* ════════════════════════════════════════
+   CELULAR
+════════════════════════════════════════ */
+function mostrarCelular(telaCaixa) {
+  const wrapCel = document.createElement('div'); wrapCel.className = 'celular-wrapper'
+  const cel     = document.createElement('div'); cel.className     = 'celular'
+  const sp      = document.createElement('div'); sp.className      = 'celular-speaker'
+  const ca      = document.createElement('div'); ca.className      = 'celular-camera'
+  const tela    = document.createElement('div'); tela.className    = 'celular-tela'
+  const hm      = document.createElement('div'); hm.className      = 'celular-home'
+  const v1      = document.createElement('div'); v1.className      = 'celular-botao-vol um'
+  const v2      = document.createElement('div'); v2.className      = 'celular-botao-vol dois'
+  const pw      = document.createElement('div'); pw.className      = 'celular-botao-power'
+
+  const efz = Math.min(2, vw() * .05) + 'rem'
+  const tfz = Math.min(.58, vw() * .014) + 'rem'
+  const nfz = Math.min(.65, vw() * .016) + 'rem'
+
+  tela.innerHTML = `
+    <div style="font-size:${efz};animation:notifPulse 1.8s ease-in-out infinite">💌</div>
+    <div style="font-size:${tfz};color:#9a6fd5;margin-top:6px;letter-spacing:.05em;animation:notifPulse 1.8s ease-in-out infinite .3s">mensagem nova</div>
+    <div style="font-size:${nfz};color:#c9a7f5;margin-top:3px;animation:notifPulse 1.8s ease-in-out infinite .6s">Tarek 💌</div>
+  `
+
+  cel.appendChild(sp); cel.appendChild(ca); cel.appendChild(tela)
+  cel.appendChild(hm); cel.appendChild(v1); cel.appendChild(v2); cel.appendChild(pw)
+  wrapCel.appendChild(cel)
+
+  // Posição fixa, abaixo do fileiro e acima das cartas
+  wrapCel.style.position  = 'fixed'
+  wrapCel.style.bottom    = '120px'
+  wrapCel.style.left      = '50%'
+  wrapCel.style.transform = 'translateX(-50%)'
+  wrapCel.style.zIndex    = '150'
+  document.body.appendChild(wrapCel)
+
+  somCelSobe()
+  gsap.fromTo(wrapCel, { y: 300, opacity: 0 }, {
+    y: 0, opacity: 1, duration: 1.2, ease: 'back.out(1.7)',
+    onComplete: () => iniciarVibracao(wrapCel, tela)
+  })
+}
+
+function iniciarVibracao(wrapCel, tela) {
+  const telaTween = gsap.to(tela, { backgroundColor: '#2a0850', repeat: -1, yoyo: true, duration: .5, ease: 'sine.inOut' })
+
+  const vibTl = gsap.timeline({ repeat: -1, repeatDelay: .8 })
+  vibTl
+    .to(wrapCel, { x:  5, rotation:  1.5, duration: .05, ease: 'none' })
+    .to(wrapCel, { x: -5, rotation: -1.5, duration: .05, ease: 'none' })
+    .to(wrapCel, { x:  4, rotation:  1.2, duration: .05, ease: 'none' })
+    .to(wrapCel, { x: -4, rotation: -1.2, duration: .05, ease: 'none' })
+    .to(wrapCel, { x:  2, rotation:   .6, duration: .05, ease: 'none' })
+    .to(wrapCel, { x:  0, rotation:    0, duration: .07, ease: 'none' })
+
+  startRing()
   if (navigator.vibrate) navigator.vibrate([120, 80, 120, 80, 300])
 
   wrapCel.style.cursor = 'pointer'
   wrapCel.addEventListener('click', () => {
-    vibTl.kill(); telaTween.kill(); pararRing()
+    vibTl.kill(); telaTween.kill(); stopRing()
     gsap.killTweensOf(tela); tela.style.backgroundColor = ''
     wrapCel.style.cursor = 'default'
-    zoomCelular(wrapCel, tela, telaCaixa)
+    zoomCelular(wrapCel, tela)
   }, { once: true })
 }
 
-function zoomCelular(wrapCel, tela, telaCaixa) {
-  const rect   = wrapCel.getBoundingClientRect()
-  const celW   = Math.min(180, vw() * 0.32)
-  const celH   = Math.min(340, vw() * 0.60)
+function zoomCelular(wrapCel, tela) {
+  const rect = wrapCel.getBoundingClientRect()
+  const celW = Math.min(180, vw() * .32)
+  const celH = Math.min(340, vw() * .60)
 
-  wrapCel.style.position = 'fixed'
-  wrapCel.style.left     = rect.left + 'px'
-  wrapCel.style.top      = rect.top  + 'px'
-  wrapCel.style.margin   = '0'
-  wrapCel.style.zIndex   = '500'
+  wrapCel.style.position  = 'fixed'
+  wrapCel.style.left      = rect.left + 'px'
+  wrapCel.style.top       = rect.top  + 'px'
+  wrapCel.style.bottom    = ''
+  wrapCel.style.transform = 'none'
+  wrapCel.style.zIndex    = '500'
 
-  const scale  = Math.min(
-    (vh() * 0.9)  / celH,
-    (vw() * 0.92) / celW,
-    2.4
-  )
+  const scale   = Math.min((vh() * .9) / celH, (vw() * .92) / celW, 2.4)
   const targetX = (vw() / 2) - (rect.left + celW / 2)
   const targetY = (vh() / 2) - (rect.top  + celH / 2)
 
   gsap.to(wrapCel, {
-    x: targetX, y: targetY, scale: scale, duration: 0.7, ease: 'power2.out',
-    onComplete: () => mostrarLockscreen(tela, wrapCel, telaCaixa)
+    x: targetX, y: targetY, scale: scale, duration: .7, ease: 'power2.out',
+    onComplete: () => mostrarLockscreen(tela, wrapCel)
   })
 }
 
-// ═══════════════════════════════════════════════════════
-// LOCKSCREEN
-// ═══════════════════════════════════════════════════════
-function mostrarLockscreen(tela, wrapCel, telaCaixa) {
+/* ════════════════════════════════════════
+   LOCKSCREEN
+════════════════════════════════════════ */
+function mostrarLockscreen(tela, wrapCel) {
   tela.innerHTML = ''; tela.style.position = 'relative'
   tela.style.overflow = 'hidden'; tela.style.padding = '0'
 
-  const lock = document.createElement('div'); lock.classList.add('lockscreen')
-
-  const topo   = document.createElement('div'); topo.classList.add('lock-topo')
-  const horaEl = document.createElement('div'); horaEl.classList.add('lock-hora')
-  const dataEl = document.createElement('div'); dataEl.classList.add('lock-data')
+  const lock  = document.createElement('div'); lock.className  = 'lockscreen'
+  const topo  = document.createElement('div'); topo.className  = 'lock-topo'
+  const horaEl = document.createElement('div'); horaEl.className = 'lock-hora'
+  const dataEl = document.createElement('div'); dataEl.className = 'lock-data'
   topo.appendChild(horaEl); topo.appendChild(dataEl)
 
-  const notif = document.createElement('div'); notif.classList.add('lock-notif')
+  const notif = document.createElement('div'); notif.className = 'lock-notif'
   notif.innerHTML = `
     <div class="lock-notif-icon">💌</div>
     <div class="lock-notif-body">
@@ -560,41 +631,41 @@ function mostrarLockscreen(tela, wrapCel, telaCaixa) {
     </div>
   `
 
-  const base    = document.createElement('div'); base.classList.add('lock-base')
-  const bolinha = document.createElement('div'); bolinha.classList.add('lock-bolinha')
-  const deslize = document.createElement('div'); deslize.classList.add('lock-deslize')
+  const base    = document.createElement('div'); base.className    = 'lock-base'
+  const bolinha = document.createElement('div'); bolinha.className = 'lock-bolinha'
+  const deslize = document.createElement('div'); deslize.className = 'lock-deslize'
   deslize.textContent = 'toque para desbloquear'
   base.appendChild(bolinha); base.appendChild(deslize)
 
   lock.appendChild(topo); lock.appendChild(notif); lock.appendChild(base)
   tela.appendChild(lock)
 
-  function atualizarHora() {
+  function updHora() {
     const n = new Date()
     horaEl.textContent = String(n.getHours()).padStart(2,'0') + ':' + String(n.getMinutes()).padStart(2,'0')
     const dias  = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb']
     const meses = ['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez']
     dataEl.textContent = dias[n.getDay()] + ', ' + n.getDate() + ' de ' + meses[n.getMonth()]
   }
-  atualizarHora()
-  const clockInt = setInterval(atualizarHora, 1000)
+  updHora()
+  const ci = setInterval(updHora, 1000)
 
-  const chatApp = criarChatApp()
+  const chatApp = buildChatApp()
   tela.appendChild(chatApp)
 
   lock.addEventListener('click', () => {
-    clearInterval(clockInt)
+    clearInterval(ci)
     desbloquear(lock, chatApp, tela, wrapCel)
   })
 }
 
-// ═══════════════════════════════════════════════════════
-// CHAT
-// ═══════════════════════════════════════════════════════
-function criarChatApp() {
-  const app = document.createElement('div'); app.classList.add('chat-app')
-  const header = document.createElement('div'); header.classList.add('chat-header')
-  header.innerHTML = `
+/* ════════════════════════════════════════
+   CHAT
+════════════════════════════════════════ */
+function buildChatApp() {
+  const app = document.createElement('div'); app.className = 'chat-app'
+  const hdr = document.createElement('div'); hdr.className = 'chat-header'
+  hdr.innerHTML = `
     <div class="chat-voltar">‹</div>
     <div class="chat-avatar">TK</div>
     <div class="chat-info">
@@ -602,107 +673,84 @@ function criarChatApp() {
       <div class="chat-status">online</div>
     </div>
   `
-  const msgs   = document.createElement('div'); msgs.classList.add('chat-msgs')
-  const bottom = document.createElement('div'); bottom.classList.add('chat-bottom')
-  bottom.innerHTML = `<div class="input-fake">Mensagem</div>`
-  app.appendChild(header); app.appendChild(msgs); app.appendChild(bottom)
+  const msgs = document.createElement('div'); msgs.className = 'chat-msgs'
+  const bot  = document.createElement('div'); bot.className  = 'chat-bottom'
+  bot.innerHTML = '<div class="input-fake">Mensagem</div>'
+  app.appendChild(hdr); app.appendChild(msgs); app.appendChild(bot)
   return app
 }
 
 function desbloquear(lock, chatApp, tela, wrapCel) {
-  gsap.to(lock, {
-    y: '-100%', opacity: 0, duration: 0.45, ease: 'power2.in',
-    onComplete: () => lock.remove()
-  })
+  gsap.to(lock, { y: '-100%', opacity: 0, duration: .45, ease: 'power2.in', onComplete: () => lock.remove() })
   setTimeout(() => {
     chatApp.classList.add('aberto')
     iniciarConversa(chatApp.querySelector('.chat-msgs'), chatApp, wrapCel)
   }, 200)
 }
 
-function esperar(ms) { return new Promise(r => setTimeout(r, ms)) }
+const esperar = ms => new Promise(r => setTimeout(r, ms))
 
-function criarDigitando(container) {
-  const el = document.createElement('div'); el.classList.add('digitando')
+function criarDigitando(c) {
+  const el = document.createElement('div'); el.className = 'digitando'
   el.innerHTML = '<span></span><span></span><span></span>'
-  container.appendChild(el); container.scrollTop = container.scrollHeight
-  return el
+  c.appendChild(el); c.scrollTop = c.scrollHeight; return el
 }
 
-function adicionarMsg(container, texto) {
-  const el = document.createElement('div'); el.classList.add('msg', 'recebida')
-  el.textContent = texto
-  container.appendChild(el); container.scrollTop = container.scrollHeight
-  somNotificacao()
+function addMsg(c, texto) {
+  const el = document.createElement('div'); el.className = 'msg recebida'
+  el.textContent = texto; c.appendChild(el); c.scrollTop = c.scrollHeight; somNotif()
 }
 
 async function iniciarConversa(msgs, chatApp, wrapCel) {
-  const TYPING = 2200
-
-  async function enviar(texto, delayAntes) {
-    await esperar(delayAntes)
-    const dot = criarDigitando(msgs)
-    await esperar(TYPING)
-    dot.remove()
-    adicionarMsg(msgs, texto)
+  const TY = 2200
+  async function send(txt, del) {
+    await esperar(del)
+    const d = criarDigitando(msgs)
+    await esperar(TY); d.remove(); addMsg(msgs, txt)
   }
-
-  await enviar('Oiii', 700)
-  await enviar('Hoje é um dia muito especial e eu não poderia deixar de fazer algo especial, para uma pessoa muito especial para mim', 2000)
-  await enviar('Voce é uma pessoa incrível e merece tudo de bom e melhor nessa vida', 2000)
-  await enviar('Eu sempre vou torcer pelo teu sucesso e a tua vitória, te desejo tudo de bom minha princesa,', 2000)
-  await enviar('Ah e antes que eu me esqueça, esse não é meu ultimo presente, talvez vc devesse voltar para a casa as 11 horas da manhã, talvez tenha outra surpresa te esperando lá 👀', 5000)
-
+  await send('Oiii', 700)
+  await send('Hoje é um dia muito especial e eu não poderia deixar de fazer algo especial, para uma pessoa muito especial para mim', 2000)
+  await send('Voce é uma pessoa incrível e merece tudo de bom e melhor nessa vida', 2000)
+  await send('Eu sempre vou torcer pelo teu sucesso e a tua vitória, te desejo tudo de bom minha princesa,', 2000)
+  await send('Ah e antes que eu me esqueça, esse não é meu ultimo presente, talvez vc devesse voltar para a casa as 11 horas da manhã, talvez tenha outra surpresa te esperando lá 👀', 5000)
   await esperar(800)
-  mostrarHintFechar(chatApp, wrapCel)
-}
 
-function mostrarHintFechar(chatApp, wrapCel) {
-  const hint = document.createElement('div'); hint.classList.add('fechar-hint')
+  const hint = document.createElement('div'); hint.className = 'fechar-hint'
   hint.textContent = 'toque para fechar'
   chatApp.appendChild(hint)
-  const cel = wrapCel.querySelector('.celular')
-  cel.style.cursor = 'pointer'
-  cel.addEventListener('click', () => {
-    hint.remove(); cel.style.cursor = 'default'; fecharCelular(wrapCel)
-  }, { once: true })
+  const cel = wrapCel.querySelector('.celular'); cel.style.cursor = 'pointer'
+  cel.addEventListener('click', () => { hint.remove(); cel.style.cursor = 'default'; fecharCelular(wrapCel) }, { once: true })
 }
 
-// ═══════════════════════════════════════════════════════
-// FECHAR CELULAR + TIMER
-// ═══════════════════════════════════════════════════════
 function fecharCelular(wrapCel) {
   gsap.to(wrapCel, {
-    y: '+=' + (vh() + 400), opacity: 0, duration: 1.0, ease: 'power2.in',
+    y: '+=' + (vh() + 400), opacity: 0, duration: 1, ease: 'power2.in',
     onComplete: () => { wrapCel.remove(); mostrarTimer() }
   })
 }
 
+/* ════════════════════════════════════════
+   TIMER
+════════════════════════════════════════ */
 function mostrarTimer() {
-  const wrap = document.createElement('div'); wrap.classList.add('timer-wrap')
-  wrap.innerHTML = `
+  const w = document.createElement('div'); w.className = 'timer-wrap'
+  w.innerHTML = `
     <div class="timer-label">sua próxima surpresa em</div>
-    <div class="timer-display" id="timerDisplay">--:--:--</div>
+    <div class="timer-display" id="timerD">--:--:--</div>
     <div class="timer-sub">às 11h da manhã 🎁</div>
   `
-  document.body.appendChild(wrap)
-  gsap.to(wrap, { opacity: 1, duration: 1.0, ease: 'power2.out' })
-  iniciarContagem(wrap.querySelector('#timerDisplay'))
-}
+  document.body.appendChild(w)
+  gsap.to(w, { opacity: 1, duration: 1, ease: 'power2.out' })
 
-function iniciarContagem(display) {
-  function atualizar() {
-    const agora = new Date(), alvo = new Date()
-    alvo.setHours(11, 0, 0, 0)
-    if (agora >= alvo) alvo.setDate(alvo.getDate() + 1)
-    const diff = alvo - agora
-    const h = Math.floor(diff / 3600000)
-    const m = Math.floor((diff % 3600000) / 60000)
-    const s = Math.floor((diff % 60000) / 1000)
-    display.textContent =
-      String(h).padStart(2,'0') + ':' +
-      String(m).padStart(2,'0') + ':' +
-      String(s).padStart(2,'0')
+  const disp = w.querySelector('#timerD')
+  function tick() {
+    const n = new Date(), a = new Date()
+    a.setHours(11, 0, 0, 0); if (n >= a) a.setDate(a.getDate() + 1)
+    const d = a - n
+    const h = Math.floor(d / 3600000)
+    const m = Math.floor((d % 3600000) / 60000)
+    const s = Math.floor((d % 60000) / 1000)
+    disp.textContent = String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0')
   }
-  atualizar(); setInterval(atualizar, 1000)
+  tick(); setInterval(tick, 1000)
 }
