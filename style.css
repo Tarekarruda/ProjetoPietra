@@ -1,3 +1,5 @@
+* { margin:0; padding:0; box-sizing:border-box; }
+
 html, body {
   width:100%; max-width:100%;
   background:#1a0a2e; font-family:Georgia,serif;
@@ -72,7 +74,7 @@ html, body {
 .card-corner.tl { top:10px; left:12px; }
 .card-corner.br { bottom:10px; right:12px; transform:rotate(180deg); }
 
-/* ══ CELULAR — alinhamento central garantido ══ */
+/* ══ CELULAR ══ */
 .celular-wrapper {
   opacity:0;
   display:flex;
@@ -84,7 +86,6 @@ html, body {
   background:#1a0530; border:3px solid #7a4fbf; border-radius:32px;
   position:relative; display:flex; flex-direction:column; align-items:center;
   padding:clamp(9px,2.5vw,18px) clamp(6px,1.5vw,10px) clamp(8px,2vw,14px);
-  /* sem transform aqui para não conflitar com GSAP */
 }
 .celular-speaker {
   width:40%; height:clamp(3px,.8vw,5px);
@@ -147,29 +148,32 @@ html, body {
   transform:translateY(100%); transition:transform .45s cubic-bezier(.4,0,.2,1);
 }
 .chat-app.aberto { transform:translateY(0); }
+
 .chat-header {
-  background:#100528; padding:7px 10px; display:flex; align-items:center;
-  gap:7px; border-bottom:.5px solid #1e0d3a; flex-shrink:0;
+  background:#100528; padding:5px 8px; display:flex; align-items:center;
+  gap:6px; border-bottom:.5px solid #1e0d3a; flex-shrink:0;
 }
 .chat-voltar { font-size:1rem; color:#7a5bb5; }
 .chat-avatar {
-  width:26px; height:26px; border-radius:50%; background:#5a1090;
+  width:22px; height:22px; border-radius:50%; background:#5a1090;
   display:flex; align-items:center; justify-content:center;
-  font-size:.62rem; color:#e0d0ff; flex-shrink:0;
+  font-size:.55rem; color:#e0d0ff; flex-shrink:0;
 }
 .chat-info   { display:flex; flex-direction:column; gap:1px; }
-.chat-nome   { font-size:clamp(.8rem,2.8vw,.95rem); color:#e0d0ff; }
-.chat-status { font-size:clamp(.65rem,2vw,.76rem); color:#4caf82; }
+.chat-nome   { font-size:clamp(.7rem,2.4vw,.82rem); color:#e0d0ff; }
+.chat-status { font-size:clamp(.56rem,1.8vw,.66rem); color:#4caf82; }
+
 .chat-msgs {
-  flex:1; overflow-y:scroll; padding:8px 7px;
-  display:flex; flex-direction:column; gap:5px;
+  flex:1; overflow-y:scroll; padding:6px;
+  display:flex; flex-direction:column; gap:4px;
   scroll-behavior:smooth; -webkit-overflow-scrolling:touch;
 }
 .chat-msgs::-webkit-scrollbar       { width:2px; }
 .chat-msgs::-webkit-scrollbar-thumb { background:#2a1a4a; border-radius:1px; }
+
 .msg {
-  max-width:86%; padding:7px 10px; border-radius:14px;
-  font-size:clamp(.82rem,2.8vw,1rem); line-height:1.55;
+  max-width:86%; padding:5px 8px; border-radius:12px;
+  font-size:clamp(.65rem,2.2vw,.78rem); line-height:1.5;
   word-break:break-word; animation:msgIn .22s ease;
 }
 @keyframes msgIn { from{opacity:0;transform:translateY(5px) scale(.97)} to{opacity:1;transform:none} }
@@ -177,29 +181,32 @@ html, body {
   background:#1a0a38; color:#c9a7f5; align-self:flex-start;
   border-bottom-left-radius:3px; border:.5px solid #2a1a4a;
 }
+
 .digitando {
-  display:flex; align-items:center; gap:3px; padding:8px 10px;
-  background:#1a0a38; border-radius:14px; border-bottom-left-radius:3px;
+  display:flex; align-items:center; gap:3px; padding:6px 8px;
+  background:#1a0a38; border-radius:12px; border-bottom-left-radius:3px;
   align-self:flex-start; border:.5px solid #2a1a4a; animation:msgIn .22s ease;
 }
 .digitando span {
-  width:4px; height:4px; background:#7a5bb5;
+  width:3px; height:3px; background:#7a5bb5;
   border-radius:50%; animation:dotbounce 1.1s ease-in-out infinite;
 }
 .digitando span:nth-child(2) { animation-delay:.16s; }
 .digitando span:nth-child(3) { animation-delay:.32s; }
-@keyframes dotbounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-4px);opacity:1} }
+@keyframes dotbounce { 0%,60%,100%{transform:translateY(0);opacity:.4} 30%{transform:translateY(-3px);opacity:1} }
+
 .chat-bottom {
-  padding:5px 7px; background:#100528;
+  padding:4px 6px; background:#100528;
   border-top:.5px solid #1e0d3a; flex-shrink:0;
 }
 .input-fake {
-  background:#1a0a38; border-radius:14px; padding:6px 10px;
-  font-size:clamp(.78rem,2.5vw,.9rem); color:#2a1a4a;
+  background:#1a0a38; border-radius:12px; padding:5px 9px;
+  font-size:clamp(.65rem,2.2vw,.78rem); color:#2a1a4a;
 }
+
 .fechar-hint {
-  font-size:clamp(.68rem,2.2vw,.8rem); color:#5a3a8a; text-align:center;
-  padding:4px 0; letter-spacing:.1em; text-transform:uppercase;
+  font-size:clamp(.56rem,1.8vw,.68rem); color:#5a3a8a; text-align:center;
+  padding:3px 0; letter-spacing:.1em; text-transform:uppercase;
   animation:piscarH 1.4s ease-in-out infinite; flex-shrink:0;
 }
 @keyframes piscarH { 0%,100%{opacity:1} 50%{opacity:.2} }
@@ -220,21 +227,17 @@ html, body {
 
 /* ══ RESPONSIVO MOBILE ══ */
 @media (max-width:430px) {
-  .box-dica { font-size:.9rem; }
-
+  .box-dica   { font-size:.88rem; }
   .card-corner { font-size:.85rem; }
-
-  .chat-header { padding:6px 8px; }
-  .chat-avatar { width:22px; height:22px; font-size:.55rem; }
-  .msg { font-size:.88rem; padding:6px 9px; }
-  .digitando { padding:7px 9px; }
-
-  .lock-hora { font-size:2.4rem; }
-  .lock-notif { padding:7px 9px; }
-  .lock-notif-msg { font-size:.8rem; }
+  .msg        { font-size:.7rem; }
+  .input-fake { font-size:.7rem; }
+  .lock-hora  { font-size:2.2rem; }
+  .lock-notif-msg { font-size:.78rem; }
 }
 
 @media (max-height:700px) {
   .tela-caixa { justify-content:center; }
-  .box-dica   { margin-top:10px; }
+  .box-dica   { margin-top:8px; }
+  .chat-msgs  { gap:3px; padding:5px; }
+  .msg        { padding:4px 7px; }
 }
